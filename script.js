@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   // Handle form submission
   form.addEventListener('submit', (e) => {
-    e.preventDefault();
+    
 
     const studentName = document.getElementById('studentName').value;
     const classTeacherName = document.getElementById('classTeacherName').value; // Get class teacher's name
