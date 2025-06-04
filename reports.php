@@ -14,39 +14,42 @@ if ($conn->connect_error) {
 }
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Prepare and bind
-    $stmt = $conn->prepare("
-        INSERT INTO student_marks (
-            studentName, classTeacherName, term, stage,
-            mathematics, chemistry, biology, physics, geography, history,
-            business, economics, ict, globalP, literature, french, mutoon, qoran
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-    ");
+    // Collect POST data directly
+    $studentName = $_POST['studentName'];
+    $classTeacherName = $_POST['classTeacherName'];
+    $term = $_POST['term'];
+    $stage = $_POST['stage'];
+    $mathematics = $_POST['mathematics'];
+    $chemistry = $_POST['chemistry'];
+    $biology = $_POST['biology'];
+    $physics = $_POST['physics'];
+    $geography = $_POST['geography'];
+    $history = $_POST['history'];
+    $business = $_POST['business'];
+    $economics = $_POST['economics'];
+    $ict = $_POST['ict'];
+    $globalP = $_POST['globalP'];
+    $literature = $_POST['literature'];
+    $french = $_POST['french'];
+    $mutoon = $_POST['mutoon'];
+    $qoran = $_POST['qoran'];
 
-    $stmt->bind_param(
-        "ssssiiiiiiiiiiiiii",
-        $_POST['studentName'],
-        $_POST['classTeacherName'],
-        $_POST['term'],
-        $_POST['stage'],
-        $_POST['mathematics'],
-        $_POST['chemistry'],
-        $_POST['biology'],
-        $_POST['physics'],
-        $_POST['geography'],
-        $_POST['history'],
-        $_POST['business'],
-        $_POST['economics'],
-        $_POST['ict'],
-        $_POST['globalP'],
-        $_POST['literature'],
-        $_POST['french'],
-        $_POST['mutoon'],
-        $_POST['qoran']
-    );
+    // Create SQL query (make sure your table and column names are correct)
+    $sql = "INSERT INTO student_marks (
+        studentName, classTeacherName, term, stage,
+        mathematics, chemistry, biology, physics, geography, history,
+        business, economics, ict, globalP, literature, french, mutoon, qoran
+    ) VALUES (
+        '$studentName', '$classTeacherName', '$term', '$stage',
+        $mathematics, $chemistry, $biology, $physics, $geography, $history,
+        $business, $economics, $ict, $globalP, $literature, $french, $mutoon, $qoran
+    )";
 
-    $stmt->execute();
-    $stmt->close();
+    if ($conn->query($sql) === TRUE) {
+        echo "Record inserted successfully";
+    } else {
+        echo "Error inserting record: " . $conn->error;
+    }
 }
 
 $conn->close();
