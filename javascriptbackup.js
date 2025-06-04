@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+/*document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('marksForm');
     const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
     const imageInput = document.getElementById('studentImageUrl');
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .scale-table th {
                   background-color: #f4f4f4;
                 }
-                /* Dashed lines before class teacher's signature */
+                /* 
                 .dashed-lines {
                   margin-top: 20px;
                   border-top: 1px dashed black;
@@ -259,7 +259,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 .dashed-lines:nth-of-type(4) {
                   margin-top: 5px;
                 }
-                /* Labels for weaknesses and strengths */
+             
                 .weaknesses-label
                  {
                   font-size: 16px;
@@ -273,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                   text-align: center;
                   margin-top: 5px;
                 }
-                /* Additional dashed lines below weaknesses and strengths */
                 .additional-dashed-lines {
                   margin-top: 5px;
                   border-top: 1px dashed black;
@@ -482,4 +481,5 @@ document.addEventListener('DOMContentLoaded', () => {
       return 'DIV5';
   };
   
-  
+  </div>
+  */
