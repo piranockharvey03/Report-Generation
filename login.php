@@ -37,6 +37,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($password, $row['password'])) {
             // Successful login
             $_SESSION['username'] = $username; // optional: set session for user
+            // Update last_login time
+            $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE username = ?");
+            $update_stmt->bind_param("s", $username);
+            $update_stmt->execute();
+            $update_stmt->close();
+
             header("Location: main.html"); // Redirect to dashboard
             exit();
         } else {
