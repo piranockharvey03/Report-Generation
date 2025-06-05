@@ -13,6 +13,7 @@ body {
     border-radius: 150px;
     width: 200px;
     height: 200px;
+    margin-top: -80px;
 
 }
   
@@ -28,6 +29,23 @@ body {
     font-size: 2.5rem;
     margin-top: -5px;
   }
+  .logout {
+        display: inline-block;
+        padding: 12px 24px;
+        background-color: rgb(160, 203, 244);
+        color: rgb(0, 0, 0);
+        text-decoration: none;
+        border-radius: 5px;
+        text-align: center;
+        margin-left:70%;
+        margin-top: 50px;
+        
+      }
+    
+      .logout:hover {
+        background-color: rgb(6, 93, 174);
+            }
+  
   
   
   .input-section{
