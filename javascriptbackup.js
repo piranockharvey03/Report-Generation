@@ -1,4 +1,4 @@
-/*document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('marksForm');
     const resultsTable = document.getElementById('resultsTable').getElementsByTagName('tbody')[0];
     const imageInput = document.getElementById('studentImageUrl');
@@ -481,5 +481,3 @@
       return 'DIV5';
   };
   
-  </div>
-  */

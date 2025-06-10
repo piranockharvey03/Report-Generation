@@ -51,7 +51,7 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     )";
 
     if ($conn->query($sql) === TRUE) {
-        echo "Record inserted successfully";
+        header("Location:main.html"); // Redirect after success
     } else {
         echo "Error inserting record: " . $conn->error;
     }
