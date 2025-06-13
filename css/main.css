@@ -1,32 +1,41 @@
 body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  background-color: #f8f9fa;
     color: #333;
+    display: flex;
+    align-content: space-between;
+    margin-top: 10px;
   }
   
-  .container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: -10px;
-    
-  }
   .mainicon1{
     border-radius: 150px;
-    width: 200px;
-    height: 200px;
-    margin-top: -80px;
+    width: 120px;
+    height: 120px;
+  }
+  .navContainer
+  {
+    width: 20%;
+    background-color: rgb(11, 62, 109); 
+   }
 
-}
+   .active{
+    display: flex;
+    margin: space;
+    justify-content: center;
+    justify-content: space-around;
+    margin-bottom: 20px;
+    margin: 20px;
+    
+   }
   
   header {
     background-color:rgb(11, 62, 109);
     color: white;
     text-align: center;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
+    margin-top: 30px;
   }
   
   header h1 {
-    font-size: 2.5rem;
+    font-size: 1.5rem;
     margin-top: -5px;
   }
   .logout {
@@ -42,11 +51,9 @@ body {
         
       }
     
-      .logout:hover {
+    .logout:hover {
         background-color: rgb(6, 93, 174);
-            }
-  
-  
+    }
   
   .input-section{
     background-color: white;
@@ -78,11 +85,12 @@ body {
     
   }
 
-    .form-group1 {
+  .form-group1
+  {
       margin-bottom: 15px;
       display:inline-block;
       margin: 20px;
-    }
+  }
    
   
   label {
@@ -96,9 +104,7 @@ body {
     width: 100%;
     padding: 10px;
     border: 3px solid #ddd;
-    border-radius: 5px;
-    
-    
+    border-radius: 5px;  
   }
   
   button.btn {
@@ -108,7 +114,7 @@ body {
     border: none;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 200px;
+    margin-left: 36px;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
     font-size: 20px;
 
@@ -125,4 +131,5 @@ body {
     padding: 10px;
     border-bottom: 1px solid #ddd;
   }
+  
   
