@@ -29,61 +29,67 @@
   
       <section class="input-section">
         <form id="marksForm" action="../php/reports.php" method="POST">
+
+            <!--Identification of the class Teacher-->
+            <div class="form-group">
+              <label for="classTeacherName">Class Teacher's Name:</label>
+              <select id="classTeacherName" name="classTeacherName" required>
+                <option value="OKELLO JOHN 7A">OKELLO JOHN 7A</option>
+                <option value="JOHN MULIMU 7B">JOHN MULIMU 7B</option>
+              </select>
+            </div>
+            <!--Specification of which term the exams were-->
+            <div class="form-group">
+              <label for="term">Select Term:</label>
+              <select id="term" name="term" required>
+                <option value="END OF TERM 1">END OF TERM 1</option>
+                <option value="HALF TERM 1">HALF TERM 1</option>
+                <option value="END OF TERM 2">END OF TERM 2</option>
+                <option value="HALF TERM 2">HALF TERM 2</option>
+                <option value="END OF TERM 3"> END OF TERM 3</option>
+                <option value="HALF TERM 3">HALF TERM 3</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label for="stage">Select Stage:</label>
+              <select id="stage" name="stage" required>
+                <option value="SENIOR 1">SENIOR 1</option>
+                <option value="SENIOR 1B">SENIOR 1B</option>
+                <option value="SENIOR 2">SENIOR 2</option>
+                <option value="SENIOR 2B">SENIOR 2B</option>
+                <option value="SENIOR 3">SENIOR 3</option>
+                <option value="SENIOR 4B">SENIOR 4B</option>
+                <option value="SENIOR 5 ARTS">SENIOR 5 ARTS</option>
+                <option value="SENIOR 5B SCIENCES">SENIOR 5B SCIENCES</option>
+                <option value="SENIOR 6  ARTS">SENIOR 6 ARTS</option>
+                <option value="SENIOR 6B SCIENCES">SENIOR 6B SCIENCES</6option>
+              </select>
+            </div><br>
+            
+            <hr style=" height: 5px; background-color: rgb(11, 62, 109);">
           <div class="active" >
   <!--inputtig the Students Name and Image-->
           <div>
             <label for="studentName">Student's Name:</label>
             <input type="text" id="studentName" name="studentName" placeholder="Enter student name" required>
           </div>
+
           <div>
             <label for="studentImage">Student's Image:</label>
             <input type="file" id="studentImageUrl" name="studentImageUrl" accept="image/*">
           </div>
+
           <div>
             <img id="imagePreview" class="student-image" src="" alt="Student Image" style="width: 150px; height: 150px;">
           </div>
+
           </div>
           <br>
           <hr style=" height: 5px; background-color: rgb(11, 62, 109);">
-  <!--Identification of the class Teacher-->
-          <div class="form-group">
-            <label for="classTeacherName">Class Teacher's Name:</label>
-            <select id="classTeacherName" name="classTeacherName" required>
-              <option value="OKELLO JOHN 7A">OKELLO JOHN 7A</option>
-              <option value="JOHN MULIMU 7B">JOHN MULIMU 7B</option>
-            </select>
-          </div>
-  <!--Specification of which term the exams were-->
-          <div class="form-group">
-            <label for="term">Select Term:</label>
-            <select id="term" name="term" required>
-              <option value="END OF TERM 1">END OF TERM 1</option>
-              <option value="HALF TERM 1">HALF TERM 1</option>
-              <option value="END OF TERM 2">END OF TERM 2</option>
-              <option value="HALF TERM 2">HALF TERM 2</option>
-              <option value="END OF TERM 3"> END OF TERM 3</option>
-              <option value="HALF TERM 3">HALF TERM 3</option>
-            </select>
-          </div>
-  
-          <div class="form-group">
-            <label for="stage">Select Stage:</label>
-            <select id="stage" name="stage" required>
-              <option value="SENIOR 1">SENIOR 1</option>
-              <option value="SENIOR 1B">SENIOR 1B</option>
-              <option value="SENIOR 2">SENIOR 2</option>
-              <option value="SENIOR 2B">SENIOR 2B</option>
-              <option value="SENIOR 3">SENIOR 3</option>
-              <option value="SENIOR 4B">SENIOR 4B</option>
-              <option value="SENIOR 5 ARTS">SENIOR 5 ARTS</option>
-              <option value="SENIOR 5B SCIENCES">SENIOR 5B SCIENCES</option>
-              <option value="SENIOR 6  ARTS">SENIOR 6 ARTS</option>
-              <option value="SENIOR 6B SCIENCES">SENIOR 6B SCIENCES</6option>
-            </select>
-          </div><br>
-  
-          <hr style=" height: 5px; background-color: rgb(11, 62, 109);">
-  
+
+          <!--Extraction of the students Marks-->
+
           <div class="form-group1">
             <label for="mathematics">Mathematics:</label>
             <input type="number" id="mathematics" data-subject="Mathematics" name="mathematics" min="0" max="100"
