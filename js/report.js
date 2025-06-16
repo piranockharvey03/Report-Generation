@@ -70,6 +70,27 @@ document.addEventListener('DOMContentLoaded', () => {
       const grade = getGrade(mark);
       totalMarks += mark;
       totalSubjects++;
+
+      // Get grade from marks
+    function getGrade(mark) {
+      if (mark >= 80) return 'A';
+      if (mark >= 75) return 'B+';
+      if (mark >= 65) return 'B';
+      if (mark >= 60) return 'C+';
+      if (mark >= 50) return 'C';
+      if (mark >= 45) return 'D+';
+      if (mark >= 40) return 'D';
+      return 'F';
+    }
+  
+    // Get division from average marks
+    function getDivision(average) {
+      if (average >= 80) return 'First Division';
+      if (average >= 65) return 'Second Division';
+      if (average >= 50) return 'Third Division';
+      if (average >= 40) return 'Pass Division';
+      return 'Fail Division';
+    }
   
       tableContent += `
         <tr>
@@ -378,26 +399,5 @@ document.addEventListener('DOMContentLoaded', () => {
       reportWindow.document.close();
       reportWindow.print();
     });
-  
-    // Get grade from marks
-    function getGrade(mark) {
-      if (mark >= 80) return 'A';
-      if (mark >= 75) return 'B+';
-      if (mark >= 65) return 'B';
-      if (mark >= 60) return 'C+';
-      if (mark >= 50) return 'C';
-      if (mark >= 45) return 'D+';
-      if (mark >= 40) return 'D';
-      return 'F';
-    }
-  
-    // Get division from average marks
-    function getDivision(average) {
-      if (average >= 80) return 'First Division';
-      if (average >= 65) return 'Second Division';
-      if (average >= 50) return 'Third Division';
-      if (average >= 40) return 'Pass Division';
-      return 'Fail Division';
-    }
   });
   
