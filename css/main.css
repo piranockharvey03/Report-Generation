@@ -5,16 +5,35 @@ body {
     align-content: space-between;
     margin-top: 10px;
   }
+  .container1{
+    display: flex;
+    background-color: rgb(11, 62, 109);
+    color: #f8f9fa;
+    justify-content: center;
+    margin: space;
+    max-width: 80%;
+    max-height: 60px;
+    margin-left: 10%;
+    border-radius: 20px;
+    
+  }
+  .report{
+    display: flex;
+    margin: 30px;
+    margin-top: -2px;
+  }
   
   .mainicon1{
     border-radius: 150px;
     width: 120px;
     height: 120px;
   }
+
   .navContainer
   {
     width: 20%;
-    background-color: rgb(11, 62, 109); 
+    background-color: rgb(11, 62, 109);
+    border-radius: 15px;
    }
 
    .active{
