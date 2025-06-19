@@ -109,8 +109,10 @@
                                 "French" => $row['french'],
                                 "Mutoon" => $row['mutoon'],
                                 "Qoran" => $row['qoran'],
-                                "Total Marks" => $row['Total_Marks'],
-                                "Average Marks" => $row['Average_Marks'],
+                                "Total Marks" => $row['total'],
+                                "Division" => $row['division'],
+                                "Average Marks" => $row['average'],
+
                                 "Created At" => $row['created_at']
                             ];
 
