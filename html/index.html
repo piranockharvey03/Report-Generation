@@ -1,35 +1,44 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The International Academy</title>
-    <link rel="stylesheet" type ="text/css" href ="../css/index.css">
-    <link rel="icon" type="image/x-icon" href="images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg">
+    <link rel="stylesheet" type="text/css" href="../css/index.css">
+    <link rel="icon" type="image/x-icon"
+        href="images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg">
 </head>
+
 <body>
-    <div class="mainicon">
-        <img class="mainicon1" src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg" alt="school icon">
+
+    <div class="login">
+        <div class="login-container">
+            <form action="../php/login.php" method="POST">
+                <div class="form-group">
+                    <img class="mainicon1"
+                        src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg"
+                        alt="school icon">
+                </div>
+                <h2 class="words">The International Academy <br>Result System</h2>
+
+
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
+                <button id="js2" onclick="sent" type="submit" class="login-btn">Login</button>
+
+            </form>
+        </div>
     </div>
-<div class="login">
-    <div class="login-container">
-         <h2 class="words">The International Academy <br>Result System</h2>
-       
-        <form action="../php/login.php" method="POST">
-            <div class="form-group">
-                <label for="username">Username</label>
-                <input type="text" id="username" name="username" required>
-            </div>
-            <div class="form-group">
-                <label for="password">Password</label>
-                <input type="password" id="password" name="password" required>
-            </div>
-            <button id="js2" onclick="sent" type="submit" class="login-btn">Login</button>
-            
-        </form>
-    </div>
-</div>
-<script src="../js/login.js"></script>
+    <script src="../js/login.js"></script>
 
 </body>
+
 </html>
