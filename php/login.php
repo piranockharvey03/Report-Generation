@@ -51,8 +51,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     } else {
         echo "<p style='color:red;'>Invalid username or password.</p>";
     }
-
     $stmt->close();
 }
-
 $conn->close();
