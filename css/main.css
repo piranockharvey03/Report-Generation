@@ -5,6 +5,7 @@ body {
     align-content: space-between;
     margin-top: 10px;
   }
+ 
   .container1{
     display: flex;
     background-color: rgb(11, 62, 109);
@@ -31,13 +32,13 @@ body {
   
   .mainicon1{
     border-radius: 150px;
-    width: 120px;
-    height: 120px;
+    width: 100px;
+    height: 100px;
   }
 
   .navContainer
   {
-    box-shadow: 15px 15px 15px 15px rgba(0, 0, 0, 00.3);
+    box-shadow: 15px 15px 15px 1px rgba(0, 0, 0, 00.3);
     width: 20%;
     background-color: rgb(11, 62, 109);
     border-radius: 15px;
@@ -94,6 +95,11 @@ body {
     margin-bottom: 40px;
     margin-top: 40px;
     
+  }
+  .form-group2{
+    box-shadow: 1px 1px 5px 1px ;
+    border-radius: 50px;
+
   }
 
   .form-group1

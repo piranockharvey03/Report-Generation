@@ -43,6 +43,9 @@ body {
     color: #555; 
     font-size: 17px;
 }
+.form{
+    box-shadow: 1px 1px 5px 1px;
+}
 
 .form-group {
     margin-bottom: 20px; 
