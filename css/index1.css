@@ -17,8 +17,16 @@ body {
     margin-left: 20%;
 }
 
+.form {
+    display: flex;
+}
 
-.login-container {
+.form-group {
+    margin-bottom: 20px;
+    margin: 20px;
+}
+
+.loginStage{
     background-color: #ffffff;
     padding: 25px;
     border-radius: 10px;
@@ -26,23 +34,6 @@ body {
     width: 50%;
 }
 
-.login-container h2 {
-    text-align: center;
-    color: rgb(11, 62, 109);
-}
-
-.login-container h1 {
-    color: #555;
-    font-size: 17px;
-}
-
-.form {
-    box-shadow: 1px 1px 5px 1px;
-}
-
-.form-group {
-    margin-bottom: 20px;
-}
 
 .form-group label {
     display: block;
@@ -58,7 +49,6 @@ body {
     border: 1px solid #ccc;
     border-radius: 5px;
     font-size: 16px;
-    margin-left: 10px;
 }
 
 .form-group input:focus,
@@ -85,18 +75,4 @@ body {
 
 .login-btn:hover {
     background-color: rgb(54, 175, 155);
-}
-
-.container {
-    text-align: center;
-}
-
-input[type="file"] {
-    margin-top: 10px;
-    padding: 5px;
-    border: none;
-    font-size: 14px;
-    cursor: pointer;
-    background-color: #f9f9f9;
-    color: #333;
 }

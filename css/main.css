@@ -1,152 +1,155 @@
 body {
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  background-color: #f8f9fa;
-    color: #333;
-    display: flex;
-    align-content: space-between;
-    margin-top: 10px;
-  }
- 
-  .container1{
-    display: flex;
-    background-color: rgb(11, 62, 109);
-    color: #f8f9fa;
-    justify-content: center;
-    margin: space;
-    max-width: 80%;
-    margin-top: 15px;
-    max-height: 60px;
-    margin-left: 10%;
-    border-radius: 20px;
-  }
-  .bodyContainer{
-    box-shadow: 15px 15px 15px 15px rgba(0, 0, 0, 00.3);
-    margin-left: 20px;
-  }
-  .report{
-    display: flex;
-    margin: 30px;
-    margin-top: -2px;
-    box-shadow: 25px 25px 25px 25px rgba(0, 0, 0, 00.3);
-  }
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+  color: #333;
+  display: flex;
+  align-content: space-between;
+  margin-top: 10px;
+}
 
-  
-  .mainicon1{
-    border-radius: 150px;
-    width: 100px;
-    height: 100px;
-  }
+.container1 {
+  display: flex;
+  background-color: rgb(11, 62, 109);
+  color: #f8f9fa;
+  justify-content: center;
+  margin: space;
+  max-width: 80%;
+  margin-top: 15px;
+  max-height: 60px;
+  margin-left: 10%;
+  border-radius: 20px;
+}
 
-  .navContainer
-  {
-    box-shadow: 15px 15px 15px 1px rgba(0, 0, 0, 00.3);
-    width: 20%;
-    background-color: rgb(11, 62, 109);
-    border-radius: 15px;
-   }
+.bodyContainer {
+  box-shadow: 15px 15px 15px 15px rgba(0, 0, 0, 00.3);
+  margin-left: 20px;
+}
 
-   .active{
-    display: flex;
-    margin: space;
-    justify-content: center;
-    justify-content: space-around;
-    margin-bottom: 20px;
-    margin: 20px;
-    
-   }
-  
-  header {
-    background-color:rgb(11, 62, 109);
-    color: white;
-    text-align: center;
-    margin-top: 30px;
-  }
-  
-  header h1 {
-    font-size: 1.5rem;
-    margin-top: -5px;
-  }
+.report {
+  display: flex;
+  margin: 30px;
+  margin-top: -2px;
+  box-shadow: 25px 25px 25px 25px rgba(0, 0, 0, 00.3);
+}
 
-  
-  .input-section{
-    background-color: white;
-      padding: 20px;
-      margin: 20px 0;
-      border-radius: 15px;
-      display: contents;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-      margin-left: 50px;
 
-  }
-  .result-section {
-    background-color: white;
-    padding: 20px;
-    margin: 20px 0;
-    border-radius: 15px;
-    display: contents;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-    margin-left: 50px;
-  }
- 
-  .form-group {
-    margin-bottom: 15px;
-    display: inline-block;
-    margin: -10px;
-    margin-left:140px;
-    margin-bottom: 40px;
-    margin-top: 40px;
-    
-  }
-  .form-group2{
-    box-shadow: 1px 1px 5px 1px ;
-    border-radius: 50px;
+.mainicon1 {
+  border-radius: 150px;
+  width: 100px;
+  height: 100px;
+}
 
-  }
+.navContainer {
+  box-shadow: 15px 15px 15px 1px rgba(0, 0, 0, 00.3);
+  width: 20%;
+  background-color: rgb(11, 62, 109);
+  border-radius: 15px;
+}
 
-  .form-group1
-  {
-      margin-bottom: 15px;
-      display:inline-block;
-      margin: 20px;
-  }
-   
-  
-  label {
-    display: block;
-    margin-bottom: 5px;
-    font-size: 20px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;  background-color: #f8f9fa;
-  }
-  
-  input,select {
-    width: 100%;
-    padding: 10px;
-    border: 3px solid #ddd;
-    border-radius: 5px;  
-  }
-  
-  button.btn {
-    background-color: rgb(11, 62, 109);
-    color: white;
-    padding: 10px 20px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    margin-left: 36px;
-    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif; 
-    font-size: 20px;
+.active {
+  display: flex;
+  margin: space;
+  justify-content: center;
+  justify-content: space-around;
+  margin-bottom: 20px;
+  margin: 20px;
 
-  }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-  }
-  
-  table th,
-  table td {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-  }
-  
-  
+}
+
+header {
+  background-color: rgb(11, 62, 109);
+  color: white;
+  text-align: center;
+  margin-top: 30px;
+}
+
+header h1 {
+  font-size: 1.5rem;
+  margin-top: -5px;
+}
+
+
+.input-section {
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+  display: contents;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 50px;
+
+}
+
+.result-section {
+  background-color: white;
+  padding: 20px;
+  margin: 20px 0;
+  border-radius: 15px;
+  display: contents;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-left: 50px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+  display: inline-block;
+  margin: -10px;
+  margin-left: 140px;
+  margin-bottom: 40px;
+  margin-top: 40px;
+
+}
+
+.form-group2 {
+  box-shadow: 1px 1px 5px 1px;
+  border-radius: 50px;
+
+}
+
+.form-group1 {
+  margin-bottom: 15px;
+  display: inline-block;
+  margin: 20px;
+}
+
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 20px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+input,
+select {
+  width: 100%;
+  padding: 10px;
+  border: 3px solid #ddd;
+  border-radius: 5px;
+}
+
+button.btn {
+  background-color: rgb(11, 62, 109);
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-left: 36px;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-size: 20px;
+
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+table th,
+table td {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}

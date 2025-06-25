@@ -39,14 +39,29 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $qoran = $_POST['qoran'];
 
     // Calculate total and average
-    $marks = [$mathematics, $chemistry, $biology, $physics, $geography, $history,
-              $business, $economics, $ict, $globalP, $literature, $french, $mutoon, $qoran];
-    
+    $marks = [
+        $mathematics,
+        $chemistry,
+        $biology,
+        $physics,
+        $geography,
+        $history,
+        $business,
+        $economics,
+        $ict,
+        $globalP,
+        $literature,
+        $french,
+        $mutoon,
+        $qoran
+    ];
+
     $total = array_sum($marks);
     $average = $total / count($marks);
 
     // Determine division
-    function calculateDivision($average) {
+    function calculateDivision($average)
+    {
         if ($average >= 80) return "Division I";
         elseif ($average >= 60) return "Division II";
         elseif ($average >= 40) return "Division III";
@@ -77,4 +92,3 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
 }
 
 $conn->close();
-?>
