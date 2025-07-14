@@ -5,6 +5,8 @@ body {
     display: flex;
     align-content: space-between;
     margin-top: 10px;
+    flex-wrap: wrap;
+    /* allow wrapping on smaller screens */
 }
 
 .container1 {
@@ -12,26 +14,27 @@ body {
     background-color: rgb(11, 62, 109);
     color: #f8f9fa;
     justify-content: center;
-    margin: space;
     max-width: 80%;
     max-height: 60px;
     margin-top: 15px;
     margin-left: 10%;
     border-radius: 20px;
+    /* Removed invalid margin: space; */
 }
 
 .bodyContainer {
-    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 00.3);
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.3);
     margin-left: 20px;
     width: 85%;
+    min-width: 280px;
 }
-
 
 .report {
     display: flex;
     margin: 30px;
     margin-top: -2px;
-    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 00.3);
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.3);
+    flex-wrap: wrap;
 }
 
 .mainicon1 {
@@ -40,12 +43,13 @@ body {
     height: 120px;
 }
 
-
 .navContainer {
     width: 20%;
     background-color: rgb(11, 62, 109);
     border-radius: 15px;
-    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 00.3);
+    box-shadow: 10px 10px 10px 10px rgba(0, 0, 0, 0.3);
+    min-width: 200px;
+    margin-left: 10px;
 }
 
 header {
@@ -53,6 +57,7 @@ header {
     color: white;
     text-align: center;
     margin-top: 30px;
+    width: 100%;
 }
 
 header h1 {
@@ -81,6 +86,7 @@ header h1 {
     border: 1px solid #ccc;
     border-radius: 5px;
     margin-left: 10px;
+    box-sizing: border-box;
 }
 
 .form-group input:focus,
@@ -90,7 +96,6 @@ header h1 {
     box-shadow: 0 0 5px rgba(42, 124, 111, 0.5);
 }
 
-
 button.btn {
     background-color: rgb(11, 62, 109);
     color: white;
@@ -98,11 +103,112 @@ button.btn {
     border: none;
     border-radius: 5px;
     margin-top: 20px;
-    margin-left: 20px;
-    cursor: pointer;
     margin-left: 36px;
+    cursor: pointer;
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     font-size: 20px;
-    margin: space-between;
+    /* Removed invalid margin: space-between; */
+    transition: background-color 0.3s ease;
+}
 
+button.btn:hover {
+    background-color: rgb(54, 175, 155);
+}
+
+/* ==== RESPONSIVE ==== */
+
+@media (max-width: 1024px) {
+    .container1 {
+        max-width: 95%;
+        margin-left: 2%;
+    }
+
+    .navContainer {
+        width: 30%;
+        margin-left: 5px;
+    }
+
+    .bodyContainer {
+        width: 70%;
+        margin-left: 10px;
+    }
+
+    .form-group label {
+        margin-left: 20%;
+        font-size: 18px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: calc(60% - 30px);
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        margin-top: 0;
+    }
+
+    .container1 {
+        max-width: 100%;
+        margin-left: 0;
+    }
+
+    .navContainer {
+        width: 100%;
+        margin-left: 0;
+        margin-bottom: 20px;
+    }
+
+    .bodyContainer {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .report {
+        flex-direction: column;
+        margin: 10px;
+    }
+
+    .form-group {
+        margin-left: 10px;
+        margin-top: 20px;
+    }
+
+    .form-group label {
+        margin-left: 10px;
+        font-size: 16px;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    button.btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    .mainicon1 {
+        width: 80px;
+        height: 80px;
+    }
+
+    button.btn {
+        font-size: 16px;
+        padding: 8px 15px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
 }
