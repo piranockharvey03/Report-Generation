@@ -1,13 +1,13 @@
 body {
     font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
     background-color: #f3f4f6;
-    margin: 0;
-    justify-content: center;
-    align-items: center;
-    align-content: center;
+    margin: 0 0 0 30%;
     height: 100vh;
     color: rgb(11, 62, 109);
-    margin-left: 30%;
+
+    /* Added flexbox for centering */
+    align-items: center;
+    align-content: center;
 }
 
 .mainicon1 {
@@ -19,21 +19,27 @@ body {
 
 .form {
     display: flex;
+    flex-wrap: wrap;
+    /* allow wrap on smaller screens */
 }
 
 .form-group {
-    margin-bottom: 20px;
     margin: 20px;
+    margin-bottom: 20px;
+    flex: 1 1 300px;
+    /* flexible but min 300px wide */
+    min-width: 280px;
 }
 
-.loginStage{
+.loginStage {
     background-color: #ffffff;
     padding: 25px;
     border-radius: 10px;
-    box-shadow: 1px 1px 5px 1px;
-    width: 50%;
+    box-shadow: 1px 1px 5px 1px rgba(0, 0, 0, 0.1);
+    width:100%;
+    max-width: 600px;
+    box-sizing: border-box;
 }
-
 
 .form-group label {
     display: block;
@@ -75,4 +81,102 @@ body {
 
 .login-btn:hover {
     background-color: rgb(54, 175, 155);
+}
+
+/* === RESPONSIVE STYLES === */
+
+@media (max-width: 1024px) {
+    body {
+        margin-left: 10%;
+    }
+
+    .mainicon1 {
+        margin-left: 10%;
+        width: 120px;
+        height: 120px;
+    }
+
+    .loginStage {
+        width: 70%;
+        padding: 20px;
+    }
+
+    .login-btn {
+        width: 80%;
+        margin-left: 10%;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        margin-left: 5%;
+        flex-direction: column;
+        height: auto;
+        padding: 20px 0;
+    }
+
+    .mainicon1 {
+        margin-left: 0;
+        width: 100px;
+        height: 100px;
+    }
+
+    .loginStage {
+        width: 90%;
+        padding: 15px;
+    }
+
+    .form {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .form-group {
+        margin: 10px 0;
+        min-width: 100%;
+        flex: none;
+    }
+
+    .form-group input,
+    .form-group select {
+        width: 100%;
+        margin-left: 0;
+    }
+
+    .login-btn {
+        width: 100%;
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 480px) {
+    body {
+        margin-left: 0;
+        padding: 10px 5px;
+    }
+
+    .mainicon1 {
+        width: 80px;
+        height: 80px;
+    }
+
+    .loginStage {
+        width: 100%;
+        padding: 10px;
+    }
+
+    .form-group label {
+        font-size: 14px;
+    }
+
+    .form-group input,
+    .form-group select {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .login-btn {
+        font-size: 16px;
+        padding: 10px;
+    }
 }
