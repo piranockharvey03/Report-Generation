@@ -124,6 +124,70 @@
 
     <script src="../js/login.js"></script>
     <script>
+        // Check for logout success parameter and show notification
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('logout') === 'success') {
+                showLogoutNotification();
+                // Clean URL after showing notification
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        });
+
+        function showLogoutNotification() {
+            // Create notification element
+            const notification = document.createElement('div');
+            notification.id = 'logout-notification';
+            notification.className = 'fixed top-20 left-4 right-4 sm:left-4 sm:right-4 md:left-auto md:right-4 bg-green-500 text-white px-4 py-3 rounded-md shadow-lg z-50 max-w-sm md:max-w-md lg:max-w-lg transform transition-all duration-300 ease-in-out opacity-100 translate-y-0';
+            notification.innerHTML = `
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2 flex-1 min-w-0">
+                        <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                        </svg>
+                        <div class="min-w-0 flex-1">
+                            <p class="text-sm font-medium truncate">Successfully logged out!</p>
+                            <p class="text-xs opacity-90 truncate">See you next time • <?php echo date('M j, Y \a\t g:i A'); ?></p>
+                        </div>
+                    </div>
+                    <button onclick="closeLogoutNotification()" class="ml-4 flex-shrink-0 p-1 rounded-full hover:bg-green-600 transition duration-200">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                        </svg>
+                    </button>
+                </div>
+            `;
+
+            // Add to page
+            document.body.appendChild(notification);
+
+            // Auto-hide after 4 seconds
+            setTimeout(function() {
+                if (notification && notification.parentNode) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(-10px)';
+                    setTimeout(function() {
+                        if (notification.parentNode) {
+                            notification.parentNode.removeChild(notification);
+                        }
+                    }, 300);
+                }
+            }, 4000);
+        }
+
+        function closeLogoutNotification() {
+            const notification = document.getElementById('logout-notification');
+            if (notification) {
+                notification.style.opacity = '0';
+                notification.style.transform = 'translateY(-10px)';
+                setTimeout(function() {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 300);
+            }
+        }
+
         function togglePassword() {
             const passwordInput = document.getElementById('password');
             const toggleBtn = passwordInput.parentElement.querySelector('button svg');

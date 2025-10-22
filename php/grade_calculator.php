@@ -11,14 +11,25 @@ class GradeCalculator {
 
     public function calculateResults($marks) {
         // Validate input
-        if (!is_array($marks) || count($marks) !== $this->totalSubjects) {
+        if (!is_array($marks)) {
             throw new Exception("Invalid marks data provided");
         }
+        
+        // Filter out null/empty values and count actual subjects taken
+        $validMarks = array_filter($marks, function($mark) {
+            return $mark !== null && $mark !== '';
+        });
+        
+        $subjectsTaken = count($validMarks);
+        
+        if ($subjectsTaken === 0) {
+            throw new Exception("At least one subject mark must be provided");
+        }
 
-        // Calculate basic statistics
-        $total = array_sum($marks);
-        $maxPossible = $this->totalSubjects * $this->maxMarksPerSubject;
-        $average = $total / $this->totalSubjects;
+        // Calculate basic statistics based on subjects taken
+        $total = array_sum($validMarks);
+        $maxPossible = $subjectsTaken * $this->maxMarksPerSubject;
+        $average = $total / $subjectsTaken;
 
         // Calculate grade
         $grade = $this->calculateGrade($average);
@@ -48,8 +59,8 @@ class GradeCalculator {
             'subject_grades' => $subjectGrades,
             'percentile' => round($percentile, 1),
             'recommendations' => $recommendations,
-            'passed_subjects' => count(array_filter($marks, fn($mark) => $mark >= $this->passingGrade)),
-            'failed_subjects' => count(array_filter($marks, fn($mark) => $mark < $this->passingGrade))
+            'passed_subjects' => count(array_filter($marks, function($mark) { return $mark >= $this->passingGrade; })),
+            'failed_subjects' => count(array_filter($marks, function($mark) { return $mark < $this->passingGrade; }))
         ];
     }
 
@@ -65,11 +76,19 @@ class GradeCalculator {
     }
 
     private function calculateGPA($marks) {
+        $validMarks = array_filter($marks, function($mark) {
+            return $mark !== null && $mark !== '';
+        });
+        
+        if (count($validMarks) === 0) {
+            return 0.0;
+        }
+        
         $totalPoints = 0;
-        foreach ($marks as $mark) {
+        foreach ($validMarks as $mark) {
             $totalPoints += $this->markToGPA($mark);
         }
-        return $totalPoints / count($marks);
+        return $totalPoints / count($validMarks);
     }
 
     private function markToGPA($mark) {
@@ -99,11 +118,14 @@ class GradeCalculator {
         ];
 
         foreach ($marks as $index => $mark) {
-            $grades[$subjects[$index]] = [
-                'marks' => $mark,
-                'grade' => $this->calculateGrade($mark),
-                'status' => $mark >= $this->passingGrade ? 'Pass' : 'Fail'
-            ];
+            // Only include subjects that were taken
+            if ($mark !== null && $mark !== '') {
+                $grades[$subjects[$index]] = [
+                    'marks' => $mark,
+                    'grade' => $this->calculateGrade($mark),
+                    'status' => $mark >= $this->passingGrade ? 'Pass' : 'Fail'
+                ];
+            }
         }
 
         return $grades;
@@ -123,6 +145,11 @@ class GradeCalculator {
 
     private function generateRecommendations($marks, $average) {
         $recommendations = [];
+        
+        // Filter valid marks
+        $validMarks = array_filter($marks, function($mark) {
+            return $mark !== null && $mark !== '';
+        });
 
         // Overall performance recommendations
         if ($average >= 80) {
@@ -136,15 +163,15 @@ class GradeCalculator {
         }
 
         // Subject-specific recommendations
-        $weakSubjects = array_filter($marks, fn($mark) => $mark < 50);
+        $weakSubjects = array_filter($validMarks, function($mark) { return $mark < 50; });
         if (count($weakSubjects) > 0) {
-            $recommendations[] = "Pay special attention to: " . implode(", ", array_keys($weakSubjects));
+            $recommendations[] = "Pay special attention to subjects with marks below 50.";
         }
 
         // Strength identification
-        $strongSubjects = array_filter($marks, fn($mark) => $mark >= 80);
+        $strongSubjects = array_filter($validMarks, function($mark) { return $mark >= 80; });
         if (count($strongSubjects) > 0) {
-            $recommendations[] = "Strong performance in: " . implode(", ", array_keys($strongSubjects));
+            $recommendations[] = "Strong performance in " . count($strongSubjects) . " subject(s).";
         }
 
         return $recommendations;
@@ -175,15 +202,12 @@ class GradeCalculator {
                 .results-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
                 .results-table th, .results-table td { border: 1px solid #ddd; padding: 8px; text-align: center; }
                 .results-table th { background-color: #f2f2f2; }
-                .grade-{strtolower($studentData['grade'])} { font-weight: bold; color: " .
-                    match($studentData['grade']) {
-                        'A+', 'A' => '#22c55e',
-                        'B+', 'B' => '#3b82f6',
-                        'C+', 'C' => '#eab308',
-                        'D' => '#f97316',
-                        default => '#ef4444'
-                    } . ";
-                }
+                .grade { font-weight: bold; }
+                .grade-a { color: #22c55e; }
+                .grade-b { color: #3b82f6; }
+                .grade-c { color: #eab308; }
+                .grade-d { color: #f97316; }
+                .grade-f { color: #ef4444; }
             </style>
         </head>
         <body>
@@ -203,7 +227,7 @@ class GradeCalculator {
                 <h3>Academic Performance</h3>
                 <p><strong>Total Marks:</strong> {$studentData['total_marks']}/{$studentData['max_possible']}</p>
                 <p><strong>Average:</strong> {$studentData['average']}%</p>
-                <p><strong>Grade:</strong> <span class='grade-{$studentData['grade']}'>{$studentData['grade']}</span></p>
+                <p><strong>Grade:</strong> <span class='grade grade-" . strtolower(substr($studentData['grade'], 0, 1)) . "'>{$studentData['grade']}</span></p>
                 <p><strong>GPA:</strong> {$studentData['gpa']}</p>
                 <p><strong>Division:</strong> {$studentData['division']}</p>
             </div>

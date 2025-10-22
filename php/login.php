@@ -37,13 +37,31 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($password, $row['password'])) {
             // Successful login
             $_SESSION['username'] = $username; // optional: set session for user
+            $_SESSION['login_success'] = true; // Flag for success notification
+            $_SESSION['login_time'] = time(); // Track login time
+            $_SESSION['user_display_name'] = $username; // For display in notification
+
+            // Fetch teacher's actual name from database
+            $name_stmt = $conn->prepare("SELECT teacher_name FROM users WHERE username = ?");
+            $name_stmt->bind_param("s", $username);
+            $name_stmt->execute();
+            $name_result = $name_stmt->get_result();
+
+            if ($name_result->num_rows === 1) {
+                $name_row = $name_result->fetch_assoc();
+                $_SESSION['teacher_name'] = $name_row['teacher_name'] ?: $username; // Use teacher_name if available, otherwise fallback to username
+            } else {
+                $_SESSION['teacher_name'] = $username; // Fallback to username if no teacher_name found
+            }
+            $name_stmt->close();
+
             // Update last_login time
             $update_stmt = $conn->prepare("UPDATE users SET last_login = NOW() WHERE username = ?");
             $update_stmt->bind_param("s", $username);
             $update_stmt->execute();
             $update_stmt->close();
 
-            header("Location:../html/main.html"); // Redirect to dashboard
+            header("Location:../html/teacher_dashboard.php"); // Redirect to dashboard
             exit();
         } else {
             echo "<p style='color:red;'>Invalid username or password.</p>";

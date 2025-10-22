@@ -1,3 +1,20 @@
+<?php
+// Start session for validation
+session_start();
+
+// Add cache control headers to prevent browser caching
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
+header("Pragma: no-cache"); // HTTP 1.0
+header("Expires: 0"); // Proxies
+
+// Check if user is logged in
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    // User is not logged in, redirect to login page
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,208 +24,328 @@
     <title>Teacher Dashboard - Results Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="icon" type="image/x-icon" href="images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
-<body class="bg-slate-50 min-h-screen">
-    <!-- Header -->
-        <header class="py-4">
-            <div class="container mx-auto px-6 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <img class="w-10 h-10" src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg" alt="school icon">
-                    <div>
-                        <h1 class="text-xl font-bold">Results Management System</h1>
-                        <p class="text-slate-300 text-sm">Teacher Dashboard</p>
-                    </div>
-                </div>
-                <div class="flex items-center space-x-4">
-                    <a href="teacher_dashboard.php" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-md transition duration-200">Dashboard</a>
-                    <a href="main.html" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200">Enter Marks</a>
-                    <a href="generatereport.php" class="bg-green-600 hover:bg-green-700 px-4 py-2 rounded-md transition duration-200">Generate Reports</a>
-                    <a href="index.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md transition duration-200">Logout</a>
+<body class="bg-slate-50 min-h-screen pb-20">
+    <?php
+    // Check for login success notification
+    $showLoginNotification = isset($_SESSION['login_success']) && $_SESSION['login_success'] === true;
+    $userDisplayName = $_SESSION['user_display_name'] ?? $_SESSION['username'] ?? 'Teacher';
+
+    // Clear the login success flag after showing notification
+    if ($showLoginNotification) {
+        unset($_SESSION['login_success']);
+    }
+    ?>
+
+    <!-- Login Success Notification -->
+    <?php if ($showLoginNotification): ?>
+    <div id="login-notification" class="fixed top-4 left-4 right-4 sm:left-4 sm:right-4 md:left-auto md:right-4 bg-green-500 text-white px-4 py-3 rounded-md shadow-lg z-50 max-w-sm md:max-w-md lg:max-w-lg transform transition-all duration-300 ease-in-out opacity-100 translate-y-0">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2 flex-1 min-w-0">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                </svg>
+                <div class="min-w-0 flex-1">
+                    <p class="text-sm font-medium truncate">Welcome back, <?php echo htmlspecialchars($userDisplayName); ?>!</p>
+                    <p class="text-xs opacity-90 truncate">Login successful • <?php echo date('M j, Y \a\t g:i A'); ?></p>
                 </div>
             </div>
-        </header>
+            <button onclick="closeLoginNotification()" class="ml-4 flex-shrink-0 p-1 rounded-full hover:bg-green-600 transition duration-200">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                </svg>
+            </button>
+        </div>
     </div>
-        <!-- Statistics Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-blue-600">
-                <div class="flex items-center">
-                    <div class="p-2 bg-blue-100 rounded-lg">
-                        <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197m13.5-9a2.5 2.5 0 11-5 0 2.5 2.5 0 015 0z"></path>
-                        </svg>
+    <?php endif; ?>
+
+    <!-- Header -->
+    <header class="bg-slate-800 text-white py-4">
+        <div class="container mx-auto px-6">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center space-x-4">
+                    <img class="w-8 h-8 sm:w-10 sm:h-10" src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg" alt="school icon">
+                    <div>
+                        <h1 class="text-lg sm:text-xl font-bold">Results Management System</h1>
+                        <p class="text-slate-300 text-xs sm:text-sm">Teacher Dashboard</p>
                     </div>
-                    <div class="ml-4">
-                        <p class="text-slate-600 text-sm">Total Records</p>
-                        <p class="text-2xl font-bold text-slate-800" id="totalRecords">0</p>
+                </div>
+
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center space-x-1 xl:space-x-2">
+                    <a href="teacher_dashboard.php" class="bg-slate-600 hover:bg-slate-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Dashboard</a>
+                    <a href="main.html" class="bg-blue-600 hover:bg-blue-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">New Entry</a>
+                    <a href="change_marks.php" class="bg-purple-600 hover:bg-purple-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Change Marks</a>
+                    <a href="generatereport.php" class="bg-green-600 hover:bg-green-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Reports</a>
+                    <a href="../php/logout.php" class="bg-red-600 hover:bg-red-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Logout</a>
+                </div>
+
+                <!-- Mobile Navigation Button -->
+                <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-slate-700 transition duration-200">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Teacher Info Section -->
+            <div class="mt-3 pt-3 border-t border-slate-700">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-2">
+                        <svg class="w-4 h-4 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                        <span class="text-slate-300 text-sm">Logged in as:</span>
+                        <span class="text-white font-medium text-sm"><?php echo htmlspecialchars($_SESSION['teacher_name'] ?? $_SESSION['username'] ?? 'Teacher'); ?></span>
+                    </div>
+                    <div class="text-xs text-slate-400">
+                        <?php echo date('l, F j, Y'); ?>
                     </div>
                 </div>
             </div>
 
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-green-600">
-                <div class="flex items-center">
-                    <div class="p-2 bg-green-100 rounded-lg">
-                        <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-slate-600 text-sm">Average Score</p>
-                        <p class="text-2xl font-bold text-slate-800" id="averageScore">0%</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-yellow-600">
-                <div class="flex items-center">
-                    <div class="p-2 bg-yellow-100 rounded-lg">
-                        <svg class="w-6 h-6 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-slate-600 text-sm">Pass Rate</p>
-                        <p class="text-2xl font-bold text-slate-800" id="passRate">0%</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-lg shadow-md p-6 border-l-4 border-purple-600">
-                <div class="flex items-center">
-                    <div class="p-2 bg-purple-100 rounded-lg">
-                        <svg class="w-6 h-6 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
-                        </svg>
-                    </div>
-                    <div class="ml-4">
-                        <p class="text-slate-600 text-sm">This Term</p>
-                        <p class="text-2xl font-bold text-slate-800" id="currentTerm">Term 1</p>
-                    </div>
+            <!-- Mobile Navigation Menu -->
+            <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-slate-700">
+                <div class="flex flex-col space-y-2 pt-4">
+                    <a href="teacher_dashboard.php" class="block bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Dashboard</a>
+                    <a href="main.html" class="block bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">New Entry</a>
+                    <a href="change_marks.php" class="block bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Change Marks</a>
+                    <a href="generatereport.php" class="block bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Reports</a>
+                    <a href="../php/logout.php" class="block bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Logout</a>
                 </div>
             </div>
         </div>
+    </header>
 
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
         <!-- Main Content -->
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-4 sm:gap-6">
             <!-- Left Column - Quick Actions -->
-            <div class="lg:col-span-1">
-                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Quick Actions</h3>
-                    <div class="space-y-3">
-                        <a href="main.html" class="block w-full bg-blue-600 hover:bg-blue-700 text-white text-center py-3 px-4 rounded-md transition duration-200">
-                            Enter New Marks
+            <div class="xl:col-span-1 order-2 xl:order-1">
+                <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
+                    <h3 class="text-sm sm:text-base font-bold text-slate-800 mb-4">Quick Actions</h3>
+                    <div class="space-y-2 sm:space-y-3">
+                        <a href="main.html" class="block w-full text-center bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 rounded-md transition duration-200 text-sm sm:text-base font-medium">
+                            New Marks
                         </a>
-                        <a href="generatereport.php" class="block w-full bg-green-600 hover:bg-green-700 text-white text-center py-3 px-4 rounded-md transition duration-200">
-                            Generate Reports
+                        <a href="change_marks.php" class="block w-full text-center bg-purple-600 hover:bg-purple-700 text-white px-4 py-3 rounded-md transition duration-200 text-sm sm:text-base font-medium">
+                            Change Marks
                         </a>
-                        <a href="class_analytics.php" class="block w-full bg-yellow-600 hover:bg-yellow-700 text-white text-center py-3 px-4 rounded-md transition duration-200">
-                            Class Analytics
+                        <a href="generatereport.php" class="block w-full text-center bg-green-600 hover:bg-green-700 text-white px-4 py-3 rounded-md transition duration-200 text-sm sm:text-base font-medium">
+                            Reports
                         </a>
                     </div>
                 </div>
 
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Recent Activity</h3>
-                    <div class="space-y-3" id="recentActivity">
-                        <div class="flex items-center space-x-3 p-3 bg-slate-50 rounded-md">
-                            <div class="w-2 h-2 bg-green-500 rounded-full"></div>
-                            <div class="flex-1">
-                                <p class="text-sm text-slate-600">No recent activity</p>
-                            </div>
+            </div>
+
+            <!-- Right Column - Database Statistics -->
+            <div class="xl:col-span-2 order-1 xl:order-2">
+                <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6">
+                    <div class="flex flex-col sm:flex-row sm:justify-between sm:items-center mb-4">
+                        <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-2 sm:mb-0">Database Overview</h3>
+                        <div class="flex gap-2">
+                            <button onclick="loadDashboardData()" class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                🔄 Refresh
+                            </button>
+                            <button onclick="testAPI()" class="bg-slate-600 hover:bg-slate-700 text-white px-3 py-1 rounded text-xs transition duration-200">
+                                🧪 Test API
+                            </button>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-1 gap-3 sm:gap-4">
+                        <div class="text-center p-3 sm:p-4 bg-slate-50 rounded-lg">
+                            <div class="text-2xl sm:text-3xl font-bold text-blue-600" id="totalRecords">Loading...</div>
+                            <div class="text-sm sm:text-base text-slate-600">Total Records</div>
+                            <div class="text-xs text-slate-500 mt-1">Students added to database</div>
                         </div>
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
 
-            <!-- Right Column - Charts and Analytics -->
-            <div class="lg:col-span-2">
-                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Performance Overview</h3>
-                    <canvas id="performanceChart" width="400" height="200"></canvas>
-                </div>
-
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-bold text-slate-800 mb-4">Grade Distribution</h3>
-                    <canvas id="gradeChart" width="400" height="200"></canvas>
-                </div>
+    <!-- Status Banner -->
+    <div class="fixed bottom-4 left-4 right-4 sm:left-4 sm:right-4 md:left-auto md:right-4 bg-blue-500 text-white px-4 py-3 rounded-md shadow-lg z-50 max-w-sm md:max-w-md lg:max-w-lg">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2 flex-1 min-w-0">
+                <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                </svg>
+                <span class="text-sm truncate">PHP Setup Required for Live Data</span>
             </div>
+            <a href="setup.php" class="ml-4 bg-blue-600 hover:bg-blue-700 px-3 py-1 rounded text-xs transition duration-200 flex-shrink-0 whitespace-nowrap">
+                Setup PHP
+            </a>
         </div>
     </div>
 
     <script>
-        // Initialize charts when page loads
         document.addEventListener('DOMContentLoaded', function() {
+            // Close login notification function
+            window.closeLoginNotification = function() {
+                const notification = document.getElementById('login-notification');
+                if (notification) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(-10px)';
+                    setTimeout(function() {
+                        notification.style.display = 'none';
+                    }, 300);
+                }
+            };
+
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+
+                // Close mobile menu when clicking on a link
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+            }
+
+            // Auto-hide login notification after 5 seconds with smooth animation
+            setTimeout(function() {
+                const notification = document.getElementById('login-notification');
+                if (notification) {
+                    notification.style.opacity = '0';
+                    notification.style.transform = 'translateY(-10px)';
+                    setTimeout(function() {
+                        notification.style.display = 'none';
+                    }, 300);
+                }
+            }, 5000);
+
+            // Load dashboard data
             loadDashboardData();
         });
 
         function loadDashboardData() {
-            // Fetch dashboard statistics
-            fetch('get_dashboard_stats.php')
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('totalRecords').textContent = data.total_students || 0; // Updated variable name
-                    document.getElementById('averageScore').textContent = Math.round(data.average_score || 0) + '%';
-                    document.getElementById('passRate').textContent = Math.round(data.pass_rate || 0) + '%';
-                    document.getElementById('currentTerm').textContent = data.current_term || 'N/A';
+            console.log('Loading dashboard data...');
 
-                    // Update charts
-                    updateCharts(data);
+            // Use a more direct approach with fallback
+            fetch('./php/get_total_records.php')
+                .then(response => {
+                    console.log('API Response status:', response.status);
+                    console.log('API Response headers:', response.headers.get('content-type'));
+
+                    if (!response.ok) {
+                        throw new Error('API request failed: ' + response.status);
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response data:', data);
+
+                    if (data && typeof data.total_students !== 'undefined') {
+                        const count = data.total_students || 0;
+                        document.getElementById('totalRecords').textContent = count;
+                        console.log('Total records set to:', count);
+                    } else {
+                        console.error('Invalid API response format:', data);
+                        document.getElementById('totalRecords').textContent = 'Error';
+                    }
                 })
                 .catch(error => {
-                    console.error('Error loading dashboard data:', error);
+                    console.error('Failed to load data:', error);
+                    // Try alternative approach
+                    loadDataAlternative();
                 });
         }
 
-        function updateCharts(data) {
-            // Performance Chart
-            const performanceCtx = document.getElementById('performanceChart').getContext('2d');
-            new Chart(performanceCtx, {
-                type: 'line',
-                data: {
-                    labels: data.performance_labels || ['Week 1', 'Week 2', 'Week 3', 'Week 4'],
-                    datasets: [{
-                        label: 'Average Performance',
-                        data: data.performance_data || [65, 70, 75, 80],
-                        borderColor: 'rgb(59, 130, 246)',
-                        backgroundColor: 'rgba(59, 130, 246, 0.1)',
-                        tension: 0.4
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false,
-                    scales: {
-                        y: {
-                            beginAtZero: true,
-                            max: 100
+        function loadDataAlternative() {
+            console.log('Trying alternative data loading...');
+
+            // Try a simple PHP approach
+            const xhr = new XMLHttpRequest();
+            xhr.open('GET', './php/get_total_records.php', true);
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                    if (xhr.status === 200) {
+                        try {
+                            const data = JSON.parse(xhr.responseText);
+                            console.log('XHR Response data:', data);
+
+                            if (data && typeof data.total_students !== 'undefined') {
+                                const count = data.total_students || 0;
+                                document.getElementById('totalRecords').textContent = count;
+                                console.log('Total records set via XHR to:', count);
+                            } else {
+                                console.error('Invalid XHR response format');
+                                document.getElementById('totalRecords').textContent = '0';
+                            }
+                        } catch (e) {
+                            console.error('Failed to parse XHR response:', e);
+                            document.getElementById('totalRecords').textContent = '0';
                         }
+                    } else {
+                        console.error('XHR failed with status:', xhr.status);
+                        document.getElementById('totalRecords').textContent = '0';
                     }
                 }
-            });
+            };
+            xhr.send();
+        }
 
-            // Grade Distribution Chart
-            const gradeCtx = document.getElementById('gradeChart').getContext('2d');
-            new Chart(gradeCtx, {
-                type: 'doughnut',
-                data: {
-                    labels: ['A (80-100%)', 'B (60-79%)', 'C (40-59%)', 'F (Below 40%)'],
-                    datasets: [{
-                        data: data.grade_distribution || [25, 35, 25, 15],
-                        backgroundColor: [
-                            'rgb(34, 197, 94)',
-                            'rgb(245, 158, 11)',
-                            'rgb(239, 68, 68)',
-                            'rgb(107, 114, 128)'
-                        ]
-                    }]
-                },
-                options: {
-                    responsive: true,
-                    maintainAspectRatio: false
+        function showNoDataState() {
+            document.getElementById('totalRecords').textContent = '0';
+            console.log('No data state - showing 0 records');
+        }
+
+        function showErrorState(error) {
+            document.getElementById('totalRecords').textContent = 'Error';
+            console.error('Dashboard API Error:', error);
+        }
+
+        function testAPI() {
+            console.log('Testing API directly...');
+
+            // Create a simple test
+            const testDiv = document.createElement('div');
+            testDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:yellow;padding:10px;border:1px solid black;z-index:9999;font-family:monospace;font-size:12px;max-width:300px;';
+            testDiv.innerHTML = '<div>Testing API...</div>';
+            document.body.appendChild(testDiv);
+
+            fetch('./php/get_total_records.php')
+                .then(response => {
+                    testDiv.innerHTML = `<div>Status: ${response.status}</div><div>Content-Type: ${response.headers.get('content-type')}</div>`;
+                    return response.text();
+                })
+                .then(text => {
+                    testDiv.innerHTML += `<div>Raw Response: ${text.substring(0, 200)}...</div>`;
+                    try {
+                        const data = JSON.parse(text);
+                        testDiv.innerHTML += `<div>Parsed: ${JSON.stringify(data)}</div>`;
+                    } catch (e) {
+                        testDiv.innerHTML += `<div>JSON Parse Error: ${e.message}</div>`;
+                    }
+                })
+                .catch(error => {
+                    testDiv.innerHTML += `<div>Error: ${error.message}</div>`;
+                });
+
+            // Remove after 10 seconds
+            setTimeout(() => {
+                if (testDiv.parentNode) {
+                    testDiv.parentNode.removeChild(testDiv);
                 }
-            });
+            }, 10000);
         }
     </script>
 </body>

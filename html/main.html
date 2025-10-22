@@ -1,3 +1,20 @@
+<?php
+// Start session for validation
+session_start();
+
+// Add cache control headers to prevent browser caching
+header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
+header("Pragma: no-cache"); // HTTP 1.0
+header("Expires: 0"); // Proxies
+
+// Check if user is logged in
+if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
+    // User is not logged in, redirect to login page
+    header("Location: index.html");
+    exit();
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -11,67 +28,91 @@
 
 </head>
 
-<body class="bg-slate-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen pb-20">
     <!-- Header -->
     <div class="bg-slate-800 text-white shadow-lg">
         <header class="py-4">
-            <div class="container mx-auto px-6 flex justify-between items-center">
-                <div class="flex items-center space-x-4">
-                    <img class="w-10 h-10" src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg" alt="school icon">
-                    <div>
-                        <p class="text-slate-300 text-sm">Results Management System</p>
+            <div class="container mx-auto px-4 sm:px-6">
+                <div class="flex justify-between items-center">
+                    <div class="flex items-center space-x-3 sm:space-x-4">
+                        <img class="w-8 h-8 sm:w-10 sm:h-10" src="../images/Education And College Logo Design Template Vector, School Logo, Education Logo, Institute Logo PNG and Vector with Transparent Background for Free Download.jpeg" alt="school icon">
+                        <div>
+                            <h1 class="text-lg sm:text-xl font-bold">Results Management System</h1>
+                            <p class="text-slate-300 text-xs sm:text-sm">Enter Student Marks</p>
+                        </div>
                     </div>
+
+                    <!-- Desktop Navigation -->
+                    <div class="hidden md:flex items-center space-x-1 xl:space-x-2">
+                        <a href="teacher_dashboard.php" class="bg-slate-600 hover:bg-slate-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Dashboard</a>
+                        <a href="change_marks.php" class="bg-purple-600 hover:bg-purple-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Change Marks</a>
+                        <a href="generatereport.php" class="bg-blue-600 hover:bg-blue-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Reports</a>
+                        <a href="../php/logout.php" class="bg-red-600 hover:bg-red-700 px-2 py-2 xl:px-3 xl:py-2 rounded-md transition duration-200 text-xs xl:text-sm whitespace-nowrap">Logout</a>
+                    </div>
+
+                    <!-- Mobile Navigation Button -->
+                    <button id="mobile-menu-button" class="md:hidden p-2 rounded-md hover:bg-slate-700 transition duration-200">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <a href="teacher_dashboard.php" class="bg-slate-600 hover:bg-slate-700 px-4 py-2 rounded-md transition duration-200">Dashboard</a>
-                    <a href="generatereport.php" class="bg-blue-600 hover:bg-blue-700 px-4 py-2 rounded-md transition duration-200">Reports</a>
-                    <a href="index.html" class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded-md transition duration-200">Logout</a>
+
+                <!-- Mobile Navigation Menu -->
+                <div id="mobile-menu" class="md:hidden hidden mt-4 pb-4 border-t border-slate-700">
+                    <div class="flex flex-col space-y-2 pt-4">
+                        <a href="teacher_dashboard.php" class="block bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Dashboard</a>
+                        <a href="change_marks.php" class="block bg-purple-600 hover:bg-purple-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Change Marks</a>
+                        <a href="generatereport.php" class="block bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Reports</a>
+                        <a href="../php/logout.php" class="block bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Logout</a>
+                    </div>
                 </div>
             </div>
         </header>
     </div>
 
-    <div class="container mx-auto px-6 py-8">
-        <main class="max-w-4xl mx-auto">
+    <div class="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
+        <main class="max-w-5xl mx-auto">
             <!-- Page Header -->
-            <div class="text-center mb-8">
-                <h2 class="text-3xl font-bold text-slate-800 mb-2">Enter Student Marks</h2>
-                <p class="text-slate-600">Enter marks for all subjects carefully. All fields are required.</p>
+            <div class="text-center mb-6 sm:mb-8">
+                <h2 class="text-2xl sm:text-3xl font-bold text-slate-800 mb-2">Enter Student Marks</h2>
+                <p class="text-slate-600 text-sm sm:text-base">Enter marks for all subjects carefully. All fields are required.</p>
             </div>
 
             <!-- Progress Steps -->
-            <div class="flex justify-center mb-8">
-                <div class="flex items-center space-x-4">
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold">1</div>
-                        <span class="ml-2 text-slate-600">Student Info</span>
+            <div class="flex justify-center mb-6 sm:mb-8">
+                <div class="flex flex-col sm:flex-row items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full max-w-2xl">
+                    <div class="flex items-center flex-1">
+                        <div class="w-8 h-8 bg-blue-600 text-white rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">1</div>
+                        <span class="ml-2 text-slate-600 text-sm sm:text-base">Student Info</span>
                     </div>
-                    <div class="w-8 h-0.5 bg-slate-300"></div>
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-bold">2</div>
-                        <span class="ml-2 text-slate-600">Subject Marks</span>
+                    <div class="w-6 h-0.5 bg-slate-300 sm:w-auto sm:h-0.5"></div>
+                    <div class="flex items-center flex-1">
+                        <div class="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">2</div>
+                        <span class="ml-2 text-slate-600 text-sm sm:text-base">Subject Marks</span>
                     </div>
-                    <div class="w-8 h-0.5 bg-slate-300"></div>
-                    <div class="flex items-center">
-                        <div class="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-bold">3</div>
-                        <span class="ml-2 text-slate-600">Review & Submit</span>
+                    <div class="w-6 h-0.5 bg-slate-300 sm:w-auto sm:h-0.5"></div>
+                    <div class="flex items-center flex-1">
+                        <div class="w-8 h-8 bg-slate-300 text-slate-600 rounded-full flex items-center justify-center text-sm font-bold flex-shrink-0">3</div>
+                        <span class="ml-2 text-slate-600 text-sm sm:text-base">Review & Submit</span>
                     </div>
                 </div>
             </div>
 
             <!-- Student Information Form -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+            <form id="marksForm" action="../php/reports.php" method="POST">
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+                <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
                     </svg>
                     Student Information
                 </h3>
 
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
                         <label for="classTeacherName" class="block text-slate-700 text-sm font-semibold mb-2">Class Teacher's Name:</label>
-                        <select id="classTeacherName" name="classTeacherName" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white">
+                        <select id="classTeacherName" name="classTeacherName" required class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white text-sm sm:text-base">
                             <option value="OKELLO JOHN 7A">OKELLO JOHN 7A</option>
                             <option value="JOHN MULIMU 7B">JOHN MULIMU 7B</option>
                         </select>
@@ -79,7 +120,7 @@
 
                     <div>
                         <label for="term" class="block text-slate-700 text-sm font-semibold mb-2">Select Term:</label>
-                        <select id="term" name="term" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white">
+                        <select id="term" name="term" required class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white text-sm sm:text-base">
                             <option value="END OF TERM 1">END OF TERM 1</option>
                             <option value="HALF TERM 1">HALF TERM 1</option>
                             <option value="END OF TERM 2">END OF TERM 2</option>
@@ -91,7 +132,7 @@
 
                     <div>
                         <label for="stage" class="block text-slate-700 text-sm font-semibold mb-2">Select Stage:</label>
-                        <select id="stage" name="stage" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white">
+                        <select id="stage" name="stage" required class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none bg-white text-sm sm:text-base">
                             <option value="SENIOR 1">SENIOR 1</option>
                             <option value="SENIOR 1B">SENIOR 1B</option>
                             <option value="SENIOR 2">SENIOR 2</option>
@@ -107,146 +148,175 @@
 
                     <div>
                         <label for="studentName" class="block text-slate-700 text-sm font-semibold mb-2">Student's Name:</label>
-                        <input type="text" id="studentName" name="studentName" placeholder="Enter student name" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="text" id="studentName" name="studentName" placeholder="Enter student name" required class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
                 </div>
             </div>
 
             <!-- Subject Marks Entry -->
-            <div class="bg-white rounded-lg shadow-md p-6 mb-8">
-                <h3 class="text-lg font-bold text-slate-800 mb-6 flex items-center">
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6 mb-6 sm:mb-8">
+                <h3 class="text-base sm:text-lg font-bold text-slate-800 mb-4 sm:mb-6 flex items-center">
                     <svg class="w-5 h-5 mr-2 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                     </svg>
-                    Subject Marks (0-100)
+                    <span class="flex-1">Subject Marks (0-100)</span>
+                    <span class="text-xs sm:text-sm text-slate-600 font-normal ml-2">Leave blank if student didn't take the exam</span>
                 </h3>
 
-                <!-- All Subjects in Organized Grid -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                     <!-- Core Sciences -->
                     <div>
                         <label for="mathematics" class="block text-slate-700 text-sm font-semibold mb-2">Mathematics:</label>
-                        <input type="number" id="mathematics" name="mathematics" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="mathematics" name="mathematics" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="chemistry" class="block text-slate-700 text-sm font-semibold mb-2">Chemistry:</label>
-                        <input type="number" id="chemistry" name="chemistry" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="chemistry" name="chemistry" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="biology" class="block text-slate-700 text-sm font-semibold mb-2">Biology:</label>
-                        <input type="number" id="biology" name="biology" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="biology" name="biology" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="physics" class="block text-slate-700 text-sm font-semibold mb-2">Physics:</label>
-                        <input type="number" id="physics" name="physics" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="physics" name="physics" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <!-- Social Sciences -->
                     <div>
                         <label for="geography" class="block text-slate-700 text-sm font-semibold mb-2">Geography:</label>
-                        <input type="number" id="geography" name="geography" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="geography" name="geography" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="history" class="block text-slate-700 text-sm font-semibold mb-2">History:</label>
-                        <input type="number" id="history" name="history" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="history" name="history" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <!-- Business & Technology -->
                     <div>
                         <label for="business" class="block text-slate-700 text-sm font-semibold mb-2">Business:</label>
-                        <input type="number" id="business" name="business" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="business" name="business" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="economics" class="block text-slate-700 text-sm font-semibold mb-2">Economics:</label>
-                        <input type="number" id="economics" name="economics" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="economics" name="economics" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="ict" class="block text-slate-700 text-sm font-semibold mb-2">ICT:</label>
-                        <input type="number" id="ict" name="ict" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="ict" name="ict" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <!-- Additional Subjects -->
                     <div>
                         <label for="globalP" class="block text-slate-700 text-sm font-semibold mb-2">Global Perspectives:</label>
-                        <input type="number" id="globalP" name="globalP" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="globalP" name="globalP" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="literature" class="block text-slate-700 text-sm font-semibold mb-2">Literature:</label>
-                        <input type="number" id="literature" name="literature" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="literature" name="literature" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="french" class="block text-slate-700 text-sm font-semibold mb-2">French:</label>
-                        <input type="number" id="french" name="french" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="french" name="french" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="mutoon" class="block text-slate-700 text-sm font-semibold mb-2">Mutoon:</label>
-                        <input type="number" id="mutoon" name="mutoon" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="mutoon" name="mutoon" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
 
                     <div>
                         <label for="qoran" class="block text-slate-700 text-sm font-semibold mb-2">Qor'an:</label>
-                        <input type="number" id="qoran" name="qoran" min="0" max="100" placeholder="0-100" required class="w-full px-4 py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none">
+                        <input type="number" id="qoran" name="qoran" min="0" max="100" placeholder="Leave blank if not taken" class="w-full px-3 sm:px-4 py-2 sm:py-3 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none text-sm sm:text-base">
                     </div>
                 </div>
             </div>
 
             <!-- Submit Section -->
-            <div class="bg-white rounded-lg shadow-md p-6">
-                <div class="flex items-center justify-between mb-6">
-                    <h3 class="text-lg font-bold text-slate-800">Review & Submit</h3>
+            <div class="bg-white rounded-lg shadow-md p-4 sm:p-6">
+                <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 gap-3 sm:gap-0">
+                    <h3 class="text-base sm:text-lg font-bold text-slate-800">Review & Submit</h3>
                     <div class="flex items-center space-x-2">
-                        <span class="text-sm text-slate-600">Total Subjects:</span>
-                        <span class="font-bold text-blue-600">14</span>
+                        <span class="text-xs sm:text-sm text-slate-600">Subjects Entered:</span>
+                        <span id="subjectCount" class="font-bold text-blue-600 text-sm sm:text-base">0</span>
+                        <span class="text-xs sm:text-sm text-slate-600">/ 14</span>
                     </div>
                 </div>
 
                 <!-- Validation Summary -->
-                <div id="validationSummary" class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-md hidden">
-                    <h4 class="font-semibold text-blue-800 mb-2">Please check the following:</h4>
-                    <ul id="validationList" class="text-sm text-blue-700 list-disc list-inside space-y-1"></ul>
+                <div id="validationSummary" class="mb-4 sm:mb-6 p-3 sm:p-4 bg-blue-50 border border-blue-200 rounded-md hidden">
+                    <h4 class="font-semibold text-blue-800 mb-2 text-sm sm:text-base">Please check the following:</h4>
+                    <ul id="validationList" class="text-xs sm:text-sm text-blue-700 list-disc list-inside space-y-1"></ul>
                 </div>
 
-                <div class="flex gap-4 justify-end">
-                    <button type="button" onclick="validateForm()" class="bg-slate-600 hover:bg-slate-700 text-white px-6 py-3 rounded-md transition duration-200">
+                <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 justify-end">
+                    <button type="button" onclick="validateForm()" class="w-full sm:w-auto bg-slate-600 hover:bg-slate-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md transition duration-200 text-sm sm:text-base font-medium">
                         Validate Entries
                     </button>
-                    <button type="submit" id="submitBtn" class="bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed" disabled>
+                    <button type="submit" id="submitBtn" class="w-full sm:w-auto bg-green-600 hover:bg-green-700 text-white px-4 sm:px-6 py-2 sm:py-3 rounded-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed text-sm sm:text-base font-medium" disabled>
                         Submit Marks
                     </button>
                 </div>
             </div>
+            </form>
         </main>
     </div>
 
-    <footer class="bg-slate-800 text-white py-6 mt-8">
-        <div class="container mx-auto px-6 text-center">
-            <p class="text-slate-300">&copy; 2025 The International Academy - Results Management System. All rights reserved.</p>
-        </div>
-    </footer>
-
     <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu toggle
+            const mobileMenuButton = document.getElementById('mobile-menu-button');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (mobileMenuButton && mobileMenu) {
+                mobileMenuButton.addEventListener('click', function() {
+                    mobileMenu.classList.toggle('hidden');
+                });
+
+                // Close mobile menu when clicking outside
+                document.addEventListener('click', function(e) {
+                    if (!mobileMenuButton.contains(e.target) && !mobileMenu.contains(e.target)) {
+                        mobileMenu.classList.add('hidden');
+                    }
+                });
+
+                // Close mobile menu when clicking on a link
+                mobileMenu.querySelectorAll('a').forEach(link => {
+                    link.addEventListener('click', function() {
+                        mobileMenu.classList.add('hidden');
+                    });
+                });
+
+                // Handle window resize for responsive behavior
+                window.addEventListener('resize', function() {
+                    if (window.innerWidth >= 768) {
+                        // Hide mobile menu on larger screens
+                        if (mobileMenu) {
+                            mobileMenu.classList.add('hidden');
+                        }
+                    }
+                });
+            }
+        });
+
         function validateForm() {
             const requiredFields = [
-                'classTeacherName', 'term', 'stage', 'studentName',
-                'mathematics', 'chemistry', 'biology', 'physics',
-                'geography', 'history', 'business', 'economics',
-                'ict', 'globalP', 'literature', 'french',
-                'mutoon', 'qoran'
+                'classTeacherName', 'term', 'stage', 'studentName'
             ];
 
             const missingFields = [];
             const invalidMarks = [];
+            let filledMarksCount = 0;
 
-            // Check required fields
+            // Check required student info fields
             requiredFields.forEach(field => {
                 const element = document.getElementById(field);
                 if (!element.value.trim()) {
@@ -254,7 +324,7 @@
                 }
             });
 
-            // Check mark ranges
+            // Check mark ranges (only if filled)
             const markFields = [
                 'mathematics', 'chemistry', 'biology', 'physics',
                 'geography', 'history', 'business', 'economics',
@@ -263,9 +333,17 @@
             ];
 
             markFields.forEach(field => {
-                const value = parseInt(document.getElementById(field).value);
-                if (isNaN(value) || value < 0 || value > 100) {
-                    invalidMarks.push(field);
+                const element = document.getElementById(field);
+                const value = element.value.trim();
+                
+                // Only validate if a value is entered
+                if (value !== '') {
+                    const numValue = parseInt(value);
+                    if (isNaN(numValue) || numValue < 0 || numValue > 100) {
+                        invalidMarks.push(field);
+                    } else {
+                        filledMarksCount++;
+                    }
                 }
             });
 
@@ -273,10 +351,21 @@
             const validationList = document.getElementById('validationList');
             const submitBtn = document.getElementById('submitBtn');
 
-            if (missingFields.length === 0 && invalidMarks.length === 0) {
+            // Check if at least one subject mark is entered
+            if (filledMarksCount === 0 && missingFields.length === 0) {
+                validationSummary.classList.remove('hidden');
+                validationList.innerHTML = '<li>Please enter marks for at least one subject</li>';
+                submitBtn.disabled = true;
+                return;
+            }
+
+            // Update subject count display
+            document.getElementById('subjectCount').textContent = filledMarksCount;
+
+            if (missingFields.length === 0 && invalidMarks.length === 0 && filledMarksCount > 0) {
                 validationSummary.classList.add('hidden');
                 submitBtn.disabled = false;
-                alert('All entries are valid! You can now submit the form.');
+                alert(`Validation successful! ${filledMarksCount} subject(s) entered. You can now submit.`);
             } else {
                 validationSummary.classList.remove('hidden');
                 validationList.innerHTML = '';
@@ -296,10 +385,34 @@
             }
         }
 
+        // Update subject count in real-time
+        function updateSubjectCount() {
+            const markFields = [
+                'mathematics', 'chemistry', 'biology', 'physics',
+                'geography', 'history', 'business', 'economics',
+                'ict', 'globalP', 'literature', 'french',
+                'mutoon', 'qoran'
+            ];
+            
+            let count = 0;
+            markFields.forEach(field => {
+                const value = document.getElementById(field).value.trim();
+                if (value !== '') {
+                    count++;
+                }
+            });
+            
+            document.getElementById('subjectCount').textContent = count;
+        }
+
         // Auto-validate on input change
         document.querySelectorAll('input, select').forEach(element => {
+            element.addEventListener('input', updateSubjectCount);
             element.addEventListener('change', validateForm);
         });
+        
+        // Initialize count on page load
+        updateSubjectCount();
     </script>
 </body>
 
