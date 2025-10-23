@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>API Debug Test</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <h1>API Debug Tests</h1>
+
+    <button onclick="testDebugAPI()">Test Debug API</button>
+    <button onclick="testSearchAPI()">Test Search API</button>
+    <button onclick="testGetStudentAPI()">Test Get Student API</button>
+    <button onclick="testUpdateAPI()">Test Update API</button>
+
+    <div id="results"></div>
+
+    <script>
+        function testDebugAPI() {
+            $('#results').html('<p>Testing debug API...</p>');
+            $.get('../php/debug_api.php')
+                .done(function(data) {
+                    $('#results').html('<h3>✅ Debug API Success:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                })
+                .fail(function(xhr, status, error) {
+                    $('#results').html('<h3>❌ Debug API Failed:</h3><p>Status: ' + xhr.status + '</p><p>Response: ' + xhr.responseText + '</p>');
+                });
+        }
+
+        function testSearchAPI() {
+            $('#results').html('<p>Testing search API...</p>');
+            $.get('../php/search_students.php', {type: 'name', query: 'test'})
+                .done(function(data) {
+                    $('#results').html('<h3>✅ Search API Success:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                })
+                .fail(function(xhr, status, error) {
+                    $('#results').html('<h3>❌ Search API Failed:</h3><p>Status: ' + xhr.status + '</p><p>Response: ' + xhr.responseText + '</p>');
+                });
+        }
+
+        function testGetStudentAPI() {
+            $('#results').html('<p>Testing get student API...</p>');
+            $.get('../php/get_student_details.php', {id: 'TEST001'})
+                .done(function(data) {
+                    $('#results').html('<h3>✅ Get Student API Success:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                })
+                .fail(function(xhr, status, error) {
+                    $('#results').html('<h3>❌ Get Student API Failed:</h3><p>Status: ' + xhr.status + '</p><p>Response: ' + xhr.responseText + '</p>');
+                });
+        }
+
+        function testUpdateAPI() {
+            $('#results').html('<p>Testing update API...</p>');
+            const testData = {
+                studentId: 'TEST001',
+                mathematics: 85,
+                chemistry: 90,
+                biology: 88
+            };
+
+            $.ajax({
+                url: '../php/update_marks.php',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(testData),
+                success: function(data) {
+                    $('#results').html('<h3>✅ Update API Success:</h3><pre>' + JSON.stringify(data, null, 2) + '</pre>');
+                },
+                error: function(xhr, status, error) {
+                    $('#results').html('<h3>❌ Update API Failed:</h3><p>Status: ' + xhr.status + '</p><p>Response: ' + xhr.responseText + '</p>');
+                    console.log('Full error details:', {xhr: xhr, status: status, error: error});
+                }
+            });
+        }
+    </script>
+</body>
+</html>

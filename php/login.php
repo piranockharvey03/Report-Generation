@@ -42,7 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['user_display_name'] = $username; // For display in notification
 
             // Fetch teacher's actual name from database
-            $name_stmt = $conn->prepare("SELECT teacher_name FROM users WHERE username = ?");
+            $name_stmt = $conn->prepare("SELECT username FROM users WHERE username = ?");
             $name_stmt->bind_param("s", $username);
             $name_stmt->execute();
             $name_result = $name_stmt->get_result();

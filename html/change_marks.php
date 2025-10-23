@@ -2,17 +2,29 @@
 // Start session for validation
 session_start();
 
-// Add cache control headers to prevent browser caching
-header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1
+// Add comprehensive cache control headers to prevent browser caching
+header("Cache-Control: no-cache, no-store, must-revalidate, max-age=0"); // HTTP 1.1
 header("Pragma: no-cache"); // HTTP 1.0
 header("Expires: 0"); // Proxies
 
-// Check if user is logged in
+// Check if user is logged in and session is still valid
 if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
     // User is not logged in, redirect to login page
     header("Location: index.html");
     exit();
 }
+
+// Optional: Check if session has expired (e.g., after 30 minutes of inactivity)
+if (isset($_SESSION['last_activity']) && (time() - $_SESSION['last_activity'] > 1800)) {
+    // Session expired, destroy and redirect
+    session_unset();
+    session_destroy();
+    header("Location: index.html?expired=1");
+    exit();
+}
+
+// Update last activity timestamp
+$_SESSION['last_activity'] = time();
 ?>
 
 <!DOCTYPE html>
@@ -45,7 +57,7 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
                     <a href="teacher_dashboard.php" class="bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-md transition duration-200 text-sm">Dashboard</a>
                     <a href="main.html" class="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-200 text-sm">New Entry</a>
                     <a href="generatereport.php" class="bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md transition duration-200 text-sm">Reports</a>
-                    <a href="index.html" class="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm">Logout</a>
+                    <a href="../php/logout.php" class="bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm">Logout</a>
                 </div>
 
                 <!-- Mobile Navigation Button -->
@@ -62,7 +74,7 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
                     <a href="teacher_dashboard.php" class="block bg-slate-600 hover:bg-slate-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Dashboard</a>
                     <a href="main.html" class="block bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">New Entry</a>
                     <a href="generatereport.php" class="block bg-green-600 hover:bg-green-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Reports</a>
-                    <a href="index.html" class="block bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Logout</a>
+                    <a href="../php/logout.php" class="block bg-red-600 hover:bg-red-700 px-3 py-2 rounded-md transition duration-200 text-sm text-center">Logout</a>
                 </div>
             </div>
         </div>
@@ -118,6 +130,7 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
 
             <!-- Edit Form (initially hidden) -->
             <div id="editForm" class="hidden bg-white rounded-lg shadow-md p-6">
+                <input type="hidden" id="currentStudentId" value="">
                 <h2 class="text-2xl font-bold text-slate-800 mb-6">Update Student Marks</h2>
                 <div id="studentInfo" class="mb-6 p-4 bg-slate-50 rounded-md">
                     <!-- Student info will be populated here -->
@@ -178,90 +191,125 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
                 $('#searchResults').removeClass('hidden');
                 $('#resultsBody').html('<tr><td colspan="6" class="px-6 py-4 text-center">Searching...</td></tr>');
                 
-                // Simulate API call (replace with actual API call)
-                setTimeout(() => {
-                    // This is a mock response - replace with actual API call
-                    const mockData = [
-                        {
-                            id: 1,
-                            admission_no: 'ADM001',
-                            name: 'John Doe',
-                            class: 'Form 1',
-                            term: 'Term 1',
-                            year: '2025'
-                        },
-                        // Add more mock data as needed
-                    ];
-                    
-                    if (mockData.length > 0) {
-                        let rows = '';
-                        mockData.forEach(student => {
-                            rows += `
-                                <tr>
-                                    <td class="px-6 py-4 whitespace-nowrap">${student.admission_no}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${student.name}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${student.class}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${student.term}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">${student.year}</td>
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <button class="text-blue-600 hover:text-blue-900 edit-student" data-id="${student.id}">Edit Marks</button>
-                                    </td>
-                                </tr>
-                            `;
-                        });
-                        $('#resultsBody').html(rows);
-                    } else {
-                        $('#resultsBody').html('<tr><td colspan="6" class="px-6 py-4 text-center">No results found</td></tr>');
+                // Make actual API call to search students
+                $.ajax({
+                    url: '../php/search_students.php',
+                    method: 'GET',
+                    data: {
+                        type: searchType,
+                        query: searchQuery
+                    },
+                    success: function(response) {
+                        if (response.success) {
+                            if (response.students.length > 0) {
+                                let rows = '';
+                                response.students.forEach(student => {
+                                    rows += `
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap">${student.admission_no}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${student.name}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${student.class}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${student.term}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">${student.year}</td>
+                                            <td class="px-6 py-4 whitespace-nowrap">
+                                                <button class="text-blue-600 hover:text-blue-900 edit-student" data-id="${student.id}">Edit Marks</button>
+                                            </td>
+                                        </tr>
+                                    `;
+                                });
+                                $('#resultsBody').html(rows);
+                            } else {
+                                $('#resultsBody').html('<tr><td colspan="6" class="px-6 py-4 text-center">No results found</td></tr>');
+                            }
+                        } else {
+                            $('#resultsBody').html('<tr><td colspan="6" class="px-6 py-4 text-center text-red-600">Search failed: ' + response.error + '</td></tr>');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        $('#resultsBody').html('<tr><td colspan="6" class="px-6 py-4 text-center text-red-600">Search failed: ' + error + '</td></tr>');
                     }
-                }, 500);
+                });
             });
             
             // Handle edit button click
             $(document).on('click', '.edit-student', function() {
                 const studentId = $(this).data('id');
-                
-                // In a real implementation, fetch the student's data and marks here
-                $('#studentInfo').html(`
-                    <h3 class="font-semibold text-lg">John Doe (ADM001)</h3>
-                    <p class="text-slate-600">Form 1 - Term 1, 2025</p>
-                `);
-                
-                // Mock subjects and marks
-                const subjects = [
-                    { id: 1, name: 'Mathematics', mark: 85 },
-                    { id: 2, name: 'English', mark: 78 },
-                    { id: 3, name: 'Kiswahili', mark: 90 },
-                    { id: 4, name: 'Physics', mark: 82 },
-                    { id: 5, name: 'Chemistry', mark: 88 },
-                    { id: 6, name: 'Biology', mark: 91 },
-                    { id: 7, name: 'History', mark: 75 },
-                    { id: 8, name: 'Geography', mark: 80 }
-                ];
-                
-                let subjectInputs = '';
-                subjects.forEach(subject => {
-                    subjectInputs += `
-                        <div class="mb-4">
-                            <label for="subject-${subject.id}" class="block text-slate-700 text-sm font-semibold mb-2">
-                                ${subject.name}:
-                            </label>
-                            <input type="number" id="subject-${subject.id}" value="${subject.mark}" 
-                                   class="w-full px-4 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none"
-                                   min="0" max="100">
-                        </div>
-                    `;
+
+                // Fetch actual student data and marks
+                $.ajax({
+                    url: '../php/get_student_details.php',
+                    method: 'GET',
+                    data: { id: studentId },
+                    success: function(response) {
+                        if (response.success) {
+                            const student = response.student;
+
+                            // Set the hidden student ID field
+                            $('#currentStudentId').val(student.id);
+
+                            // Populate student info
+                            $('#studentInfo').html(`
+                                <h3 class="font-semibold text-lg">${student.name} (${student.id})</h3>
+                                <p class="text-slate-600">${student.class} - ${student.term}, ${student.year}</p>
+                                <p class="text-sm text-slate-500 mt-2">
+                                    Teacher: ${student.teacher} |
+                                    Current Average: ${student.results.average} |
+                                    Division: ${student.results.division}
+                                </p>
+                            `);
+
+                            // Generate subject input fields
+                            const subjectNames = [
+                                { key: 'mathematics', name: 'Mathematics' },
+                                { key: 'chemistry', name: 'Chemistry' },
+                                { key: 'biology', name: 'Biology' },
+                                { key: 'physics', name: 'Physics' },
+                                { key: 'geography', name: 'Geography' },
+                                { key: 'history', name: 'History' },
+                                { key: 'business', name: 'Business' },
+                                { key: 'economics', name: 'Economics' },
+                                { key: 'ict', name: 'ICT' },
+                                { key: 'globalP', name: 'Global Perspective' },
+                                { key: 'literature', name: 'Literature' },
+                                { key: 'french', name: 'French' },
+                                { key: 'mutoon', name: 'Mutoon' },
+                                { key: 'qoran', name: 'Qoran' }
+                            ];
+
+                            let subjectInputs = '';
+                            subjectNames.forEach(subject => {
+                                const currentMark = student.marks[subject.key] !== null ? student.marks[subject.key] : '';
+                                subjectInputs += `
+                                    <div class="mb-4">
+                                        <label for="subject-${subject.key}" class="block text-slate-700 text-sm font-semibold mb-2">
+                                            ${subject.name}:
+                                        </label>
+                                        <input type="number" id="subject-${subject.key}" value="${currentMark}"
+                                               class="w-full px-4 py-2 rounded-md border border-slate-300 focus:ring-2 focus:ring-blue-600 focus:border-blue-600 transition duration-200 outline-none"
+                                               min="0" max="100" placeholder="Enter marks">
+                                    </div>
+                                `;
+                            });
+
+                            $('.grid').html(subjectInputs);
+
+                            // Show the edit form and hide search results
+                            $('#searchResults').addClass('hidden');
+                            $('#editForm').removeClass('hidden');
+
+                            // Scroll to the form
+                            $('html, body').animate({
+                                scrollTop: $('#editForm').offset().top - 20
+                            }, 500);
+
+                        } else {
+                            alert('Error loading student data: ' + response.error);
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Error loading student data: ' + error);
+                    }
                 });
-                
-                $('.grid').html(subjectInputs);
-                
-                // Show the edit form and hide search results
-                $('#searchResults').addClass('hidden');
-                $('#editForm').removeClass('hidden');
-                
-                // Scroll to the form
-                $('html, body').animate({
-                    scrollTop: $('#editForm').offset().top - 20
-                }, 500);
             });
             
             // Handle cancel button
@@ -272,22 +320,97 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
             
             // Handle save changes
             $('#saveChanges').click(function() {
-                if (confirm('Are you sure you want to update these marks?')) {
-                    // In a real implementation, collect all the marks and send to the server
-                    alert('Marks updated successfully!');
-                    $('#editForm').addClass('hidden');
-                    $('#searchQuery').val('');
-                    $('#searchResults').addClass('hidden');
+                // Collect all subject marks
+                const subjectNames = [
+                    'mathematics', 'chemistry', 'biology', 'physics', 'geography',
+                    'history', 'business', 'economics', 'ict', 'globalP',
+                    'literature', 'french', 'mutoon', 'qoran'
+                ];
+
+                const marksData = {};
+                let hasValidMarks = false;
+
+                subjectNames.forEach(subject => {
+                    const value = $('#subject-' + subject).val().trim();
+                    if (value !== '' && !isNaN(value) && value >= 0 && value <= 100) {
+                        marksData[subject] = parseInt(value);
+                        hasValidMarks = true;
+                    } else if (value !== '') {
+                        alert('Please enter valid marks (0-100) for all subjects');
+                        return;
+                    }
+                });
+
+                if (!hasValidMarks) {
+                    alert('Please enter at least one subject mark');
+                    return;
+                }
+
+                // Get student ID from the hidden field
+                const studentId = $('#currentStudentId').val();
+                if (!studentId) {
+                    alert('Error: Could not find student ID');
+                    return;
+                }
+
+                marksData.studentId = studentId;
+
+                console.log('Sending marks data:', marksData);
+
+                if (confirm('Are you sure you want to update these marks? This will recalculate the student\'s grades.')) {
+                    // Show loading state
+                    $('#saveChanges').prop('disabled', true).text('Saving...');
+
+                    // Send data to API
+                    $.ajax({
+                        url: '../php/update_marks.php',
+                        method: 'POST',
+                        contentType: 'application/json',
+                        data: JSON.stringify(marksData),
+                        success: function(response) {
+                            console.log('SUCCESS: API Response:', response);
+                            if (response.success) {
+                                alert('✅ Marks updated successfully!\n\nNew Average: ' + response.results.average + '\nDivision: ' + response.results.division + '\nGrade: ' + response.results.grade);
+
+                                // Reset form and go back to search
+                                $('#editForm').addClass('hidden');
+                                $('#searchQuery').val('');
+                                $('#searchResults').addClass('hidden');
+                                $('#saveChanges').prop('disabled', false).text('Save Changes');
+                            } else {
+                                alert('❌ Error updating marks: ' + response.error);
+                                $('#saveChanges').prop('disabled', false).text('Save Changes');
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('XHR Response:', xhr.responseText);
+                            console.log('Status:', status);
+                            console.log('Error:', error);
+
+                            let errorMessage = 'Unknown error occurred';
+                            try {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response && response.error) {
+                                    errorMessage = response.error;
+                                }
+                            } catch (parseError) {
+                                errorMessage = 'Invalid JSON response from server. Check console for details.';
+                            }
+
+                            alert('❌ Error updating marks: ' + errorMessage + '\n\nCheck browser console for technical details.');
+                            $('#saveChanges').prop('disabled', false).text('Save Changes');
+                        }
+                    });
                 }
             });
             
-            // Allow pressing Enter in search field
-            $('#searchQuery').keypress(function(e) {
-                if (e.which === 13) {
-                    $('#searchButton').click();
+            // Handle session timeout errors
+            $(document).ajaxError(function(event, xhr, settings, error) {
+                if (xhr.status === 401) {
+                    alert('Your session has expired. Please log in again.');
+                    window.location.href = 'index.html';
                 }
             });
-        });
     </script>
 </body>
 </html>

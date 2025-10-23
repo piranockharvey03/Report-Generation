@@ -238,69 +238,56 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
         function loadDashboardData() {
             console.log('Loading dashboard data...');
 
-            // Use a more direct approach with fallback
-            fetch('./php/get_total_records.php')
-                .then(response => {
-                    console.log('API Response status:', response.status);
-                    console.log('API Response headers:', response.headers.get('content-type'));
-
-                    if (!response.ok) {
-                        throw new Error('API request failed: ' + response.status);
-                    }
-
-                    return response.json();
-                })
-                .then(data => {
-                    console.log('API Response data:', data);
-
-                    if (data && typeof data.total_students !== 'undefined') {
-                        const count = data.total_students || 0;
-                        document.getElementById('totalRecords').textContent = count;
-                        console.log('Total records set to:', count);
-                    } else {
-                        console.error('Invalid API response format:', data);
-                        document.getElementById('totalRecords').textContent = 'Error';
-                    }
-                })
+            // Try multiple API approaches
+            tryLoadAPI('./php/get_total_records.php', 'Primary API')
+                .catch(() => tryLoadAPI('php/get_total_records.php', 'Fallback API'))
+                .catch(() => tryLoadAPI('../php/get_total_records.php', 'Alternative API'))
                 .catch(error => {
-                    console.error('Failed to load data:', error);
-                    // Try alternative approach
-                    loadDataAlternative();
+                    console.error('All API attempts failed:', error);
+                    document.getElementById('totalRecords').textContent = 'Server Error';
                 });
         }
 
-        function loadDataAlternative() {
-            console.log('Trying alternative data loading...');
+        function tryLoadAPI(apiUrl, apiName) {
+            console.log(`Trying ${apiName}: ${apiUrl}`);
 
-            // Try a simple PHP approach
-            const xhr = new XMLHttpRequest();
-            xhr.open('GET', './php/get_total_records.php', true);
-            xhr.onreadystatechange = function() {
-                if (xhr.readyState === 4) {
-                    if (xhr.status === 200) {
-                        try {
-                            const data = JSON.parse(xhr.responseText);
-                            console.log('XHR Response data:', data);
-
-                            if (data && typeof data.total_students !== 'undefined') {
-                                const count = data.total_students || 0;
-                                document.getElementById('totalRecords').textContent = count;
-                                console.log('Total records set via XHR to:', count);
-                            } else {
-                                console.error('Invalid XHR response format');
-                                document.getElementById('totalRecords').textContent = '0';
-                            }
-                        } catch (e) {
-                            console.error('Failed to parse XHR response:', e);
-                            document.getElementById('totalRecords').textContent = '0';
-                        }
-                    } else {
-                        console.error('XHR failed with status:', xhr.status);
-                        document.getElementById('totalRecords').textContent = '0';
-                    }
+            return fetch(apiUrl, {
+                method: 'GET',
+                headers: {
+                    'Accept': 'application/json',
                 }
-            };
-            xhr.send();
+            })
+            .then(response => {
+                console.log(`${apiName} Response:`, response.status, response.statusText);
+                console.log(`${apiName} Content-Type:`, response.headers.get('content-type'));
+
+                if (response.status === 404) {
+                    throw new Error(`API not found: ${response.status} ${response.statusText}`);
+                }
+
+                if (!response.ok) {
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+                }
+
+                return response.json();
+            })
+            .then(data => {
+                console.log(`${apiName} Data received:`, data);
+
+                if (data && typeof data.total_students !== 'undefined') {
+                    const count = data.total_students || 0;
+                    document.getElementById('totalRecords').textContent = count;
+                    console.log(`✅ Total records set to: ${count}`);
+                } else if (data && typeof data.count !== 'undefined') {
+                    // Handle different response format
+                    const count = data.count || 0;
+                    document.getElementById('totalRecords').textContent = count;
+                    console.log(`✅ Total records set to: ${count} (alternative format)`);
+                } else {
+                    console.error(`❌ Invalid response format from ${apiName}:`, data);
+                    document.getElementById('totalRecords').textContent = 'Format Error';
+                }
+            });
         }
 
         function showNoDataState() {
@@ -314,38 +301,63 @@ if (!isset($_SESSION['username']) || empty($_SESSION['username'])) {
         }
 
         function testAPI() {
-            console.log('Testing API directly...');
+            console.log('Testing API with multiple paths...');
 
-            // Create a simple test
+            // Create a detailed test
             const testDiv = document.createElement('div');
-            testDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:yellow;padding:10px;border:1px solid black;z-index:9999;font-family:monospace;font-size:12px;max-width:300px;';
-            testDiv.innerHTML = '<div>Testing API...</div>';
+            testDiv.style.cssText = 'position:fixed;top:10px;right:10px;background:#f0f9ff;padding:15px;border:2px solid #0ea5e9;z-index:9999;font-family:monospace;font-size:11px;max-width:400px;max-height:400px;overflow:auto;border-radius:8px;';
+            testDiv.innerHTML = '<div><strong>🔧 API Debug Test</strong></div><div>Trying multiple API paths...</div>';
             document.body.appendChild(testDiv);
 
-            fetch('./php/get_total_records.php')
-                .then(response => {
-                    testDiv.innerHTML = `<div>Status: ${response.status}</div><div>Content-Type: ${response.headers.get('content-type')}</div>`;
-                    return response.text();
-                })
-                .then(text => {
-                    testDiv.innerHTML += `<div>Raw Response: ${text.substring(0, 200)}...</div>`;
-                    try {
-                        const data = JSON.parse(text);
-                        testDiv.innerHTML += `<div>Parsed: ${JSON.stringify(data)}</div>`;
-                    } catch (e) {
-                        testDiv.innerHTML += `<div>JSON Parse Error: ${e.message}</div>`;
-                    }
-                })
-                .catch(error => {
-                    testDiv.innerHTML += `<div>Error: ${error.message}</div>`;
-                });
+            const apiPaths = [
+                './php/get_total_records.php',
+                'php/get_total_records.php',
+                '../php/get_total_records.php',
+                '/php/get_total_records.php'
+            ];
 
-            // Remove after 10 seconds
+            let completedTests = 0;
+
+            apiPaths.forEach((path, index) => {
+                setTimeout(() => {
+                    testDiv.innerHTML += `<div><br>Testing path ${index + 1}: <code>${path}</code></div>`;
+
+                    fetch(path)
+                        .then(response => {
+                            testDiv.innerHTML += `<div>  ✅ Status: ${response.status} ${response.statusText}</div>`;
+                            testDiv.innerHTML += `<div>  📄 Content-Type: ${response.headers.get('content-type') || 'none'}</div>`;
+                            return response.text();
+                        })
+                        .then(text => {
+                            testDiv.innerHTML += `<div>  📨 Response: ${text.substring(0, 100)}${text.length > 100 ? '...' : ''}</div>`;
+                            try {
+                                const data = JSON.parse(text);
+                                testDiv.innerHTML += `<div>  ✅ JSON OK: ${JSON.stringify(data).substring(0, 50)}...</div>`;
+                                if (data.total_students !== undefined) {
+                                    testDiv.innerHTML += `<div>  🎯 Found total_students: ${data.total_students}</div>`;
+                                }
+                            } catch (e) {
+                                testDiv.innerHTML += `<div>  ❌ JSON Error: ${e.message}</div>`;
+                            }
+                        })
+                        .catch(error => {
+                            testDiv.innerHTML += `<div>  ❌ Error: ${error.message}</div>`;
+                        })
+                        .finally(() => {
+                            completedTests++;
+                            if (completedTests === apiPaths.length) {
+                                testDiv.innerHTML += '<div><br>🏁 All tests completed</div>';
+                            }
+                        });
+                }, index * 1000); // Stagger tests by 1 second
+            });
+
+            // Remove after 30 seconds
             setTimeout(() => {
                 if (testDiv.parentNode) {
                     testDiv.parentNode.removeChild(testDiv);
                 }
-            }, 10000);
+            }, 30000);
         }
     </script>
 </body>
